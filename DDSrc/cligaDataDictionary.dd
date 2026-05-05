@@ -1,0 +1,34 @@
+﻿Use DataDict.pkg
+
+Open liga
+Open equipo
+
+Class cligaDataDictionary is a DataDictionary
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        Set Main_File to liga.File_Number
+
+        Set Add_Client_File to equipo.File_Number
+
+        Set Foreign_Field_Option DD_KEYFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_KEYFIELD DD_FINDREQ to True
+        Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
+        
+    End_Procedure
+    
+    Procedure LimpiarDDo
+        String sNombre
+        
+        Send Request_Clear
+        Set Field_Changed_Value Field liga.Nombre to "Maria"
+        
+        Set Field_Changed_Value Field liga.Pais to "Maria"
+        Set Field_Changed_Value Field liga.Equipos to 7
+        Set Field_Changed_Value Field liga.EquiposMax to 77
+        Send Request_Save
+        
+    End_Procedure
+
+End_Class

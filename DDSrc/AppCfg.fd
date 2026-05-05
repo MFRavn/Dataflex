@@ -1,0 +1,14 @@
+#REPLACE FILE400 AppCfg
+#REPLACE AppCfg.Recnum |FN400,0
+#REPLACE AppCfg.ID |FN400,1
+#REPLACE AppCfg.ParamName |FS400,2
+#REPLACE AppCfg.Apps |FS400,3
+#REPLACE AppCfg.Devices |FS400,4
+#REPLACE AppCfg.ParamType |FS400,5
+#REPLACE AppCfg.Value |FS400,6
+#REPLACE AppCfg.Categories |FS400,7
+#REPLACE AppCfg.Notes |FS400,8
+#REPLACE AppCfg.DbCreateCLT |FD400,9
+#REPLACE AppCfg.DbCreateCLT_Bias |FN400,10
+#REPLACE AppCfg.DbLastUpdateCLT |FD400,11
+#REPLACE AppCfg.DbLastUpdateCLT_Bias |FN400,12

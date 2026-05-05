@@ -1,0 +1,12 @@
+ID
+ParamName
+Apps
+Devices
+ParamType
+Value
+Categories
+Notes
+DbCreateCLT
+DbCreateCLT_Bias
+DbLastUpdateCLT
+DbLastUpdateCLT_Bias

@@ -1,0 +1,14 @@
+[Header]
+Mask=*.src;*.vw;*.sl;*.dg;*.rv;*.bp;*.pkg;*.wo;*.dd;*.inc;*.tpl;*.dfo;*.asp;*.asa;*.html;*.css;*.js
+Active=1
+SubDirectories=1
+WholeWordOnly=0
+RegularExpression=0
+SearchWhere=0
+Location=C:\Local.DF25.projects\FutbolWebApp\IdeSrc\DanielFernandezCampo_FindInFiles.dsk
+[C:\Local.DF25.projects\FutbolWebApp\AppSrc]
+IsEnabled=1
+[C:\Local.DF25.projects\FutbolWebApp\DDSrc]
+IsEnabled=1
+[C:\Local.DF25.projects\FutbolWebApp\AppHtml]
+IsEnabled=1

@@ -1,0 +1,14 @@
+[Properties]
+Version=25.0
+[WorkspacePaths]
+ConfigFile=.\Programs\Config.ws
+[Preferences]
+DefaultFormHeight=12
+[Conditionals]
+Is$WebApp=True
+Is$Win64=True
+[Libraries]
+Lib1=..\..\Users\DanielFernandezCampo\Cesur-GCoremsa\Desarrollo - Documentos\DF-Libraries\DF.25\zCommon Library\Common Library.sws
+[Projects]
+Project0=WebApp.src
+Project1=conexion.src

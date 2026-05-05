@@ -1,0 +1,22 @@
+﻿#HEADER
+    Use DFAllEnt.pkg
+    Use cFlexTronPanel.pkg
+    Use zcLocalWebAppHost.pkg
+    Use AllWebControlClasses.pkg
+    Use zcApplication.pkg
+    //-------
+    // Comentar siguiente linea si no se usa libreria externa ChilKat    
+    //-------
+    Use zChilkat.pkg
+    //-------
+    Use zcDataDict.pkg
+    Use zcSQLExecutor.pkg
+    //-------
+    Use zAllWebControlClasses.pkg
+    //-------------------
+    // añadir los pkg propios de cada proyecto que se consideren necesarios
+    // Use XXXXX.pkg
+    // Use XXXXX.pkg
+    // Use XXXXX.pkg
+#ENDHEADER
+    

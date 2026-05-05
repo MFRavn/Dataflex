@@ -1,0 +1,39 @@
+﻿Use UI
+
+// Definimos una clase para manejar la seguridad de forma global
+Class cSeguridadHandler is a cObject
+
+    // Función principal: Verifica si el usuario actual es Administrador
+    // Nota: psUsuarioTipo debe ser la propiedad donde guardas el rol al hacer login
+    Function EsUsuarioAdmin Returns Boolean
+        String sRol
+        // Obtenemos el rol desde el SessionManager (ghoWebSessionManager)
+        WebGet psUsuarioTipo of ghoWebSessionManager to sRol
+        Function_Return (sRol = "ADMIN")
+    End_Function
+
+    // Procedimiento para aplicar restricciones a un Data Dictionary
+    // Recibe el ID del Data Dictionary (hoDD)
+    Procedure AplicarRestriccionesAdmin Handle hoDD
+        Boolean bEsAdmin
+        Get EsUsuarioAdmin to bEsAdmin
+
+        If (not(bEsAdmin)) Begin
+            // Si NO es admin, aplicamos las prohibiciones:
+            
+            // 1. No permite crear nuevos registros
+            Set pbAllowCreate of hoDD to False
+            
+            // 2. No permite guardar cambios en registros existentes
+            Set pbAllowEdit of hoDD to False
+            
+            // 3. No permite borrar
+            Set pbAllowDelete of hoDD to False
+        End_If
+    End_Procedure
+
+End_ClassF
+
+// Creamos un objeto global para no tener que estar creando uno en cada vista
+Object oSeguridadHandler is a cSeguridadHandler
+End_Object

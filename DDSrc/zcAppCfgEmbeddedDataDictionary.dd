@@ -1,0 +1,182 @@
+﻿Use zcDataDict.pkg
+Use zGlobalCharacterControl.pkg
+Use for_all.pkg
+
+Open AppCfg
+Open DFLastID
+
+Object ParameterTypes is a DescriptionValidationTable
+    Procedure Fill_List
+        Forward Send Fill_List
+        Send Add_Table_Value "B" "Boolean"
+        Send Add_Table_Value "I" "Integer"
+        Send Add_Table_Value "J" "Json"
+        Send Add_Table_Value "N" "Number"
+        Send Add_Table_Value "S" "String"
+    End_Procedure
+End_Object
+
+Register_Function zValidateErrValue Integer iColumn String sValue Returns Boolean
+
+Class zcAppCfgEmbeddedDataDictionary is a zcDataDictionary
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        Set Main_File to AppCfg.File_Number
+
+        Set Add_System_File to DFLastID.File_Number DD_Lock_On_All
+
+        Set Foreign_Field_Option DD_KEYFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_KEYFIELD DD_FINDREQ to True
+        Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
+
+        Set Field_Auto_Increment Field AppCfg.ID to File_Field DFLastID.AppCfgId
+        Set Field_Option Field AppCfg.ID DD_NOPUT to True
+        Set Key_Field_State Field AppCfg.ID to True
+        Set Field_Label_Long Field AppCfg.ID to "Identificador único de registro"
+        Set Field_Label_Short Field AppCfg.ID to "ID"
+        Set Status_Help Field AppCfg.ID to "Identificador único de registro (autoincrementado por el sistema)"
+        Set Field_Option Field AppCfg.ID DD_DISPLAYONLY to True
+
+        Set Field_Label_Long Field AppCfg.ParamName to "Nombre del parámetro"
+        Set Field_Label_Short Field AppCfg.ParamName to "Nombre"
+        Set Status_Help Field AppCfg.ParamName to "Nombre del parámetro (Descriptivo)"
+        Set Field_Option Field AppCfg.ParamName DD_REQUIRED to True
+
+        Set Field_Label_Long Field AppCfg.Apps to "Aplicaciones que usan el parámetro"
+        Set Field_Label_Short Field AppCfg.Apps to "Aplicaciones"
+        Set Status_Help Field AppCfg.Apps to "Aplicaciones que usan el parámetro"
+
+        Set Field_Label_Long Field AppCfg.Devices to "Dispositivos o Modo de visualización"
+        Set Field_Label_Short Field AppCfg.Devices to "Dispositivos/Modo"
+        Set Status_Help Field AppCfg.Devices to "Tipo de dispositivo o modo en el que se visualiza"
+
+        Set Field_Label_Long Field AppCfg.ParamType to "Tipo del parámetro"
+        Set Field_Label_Short Field AppCfg.ParamType to "Tipo"
+        Set Field_Class_Name Field AppCfg.ParamType to "Combo"
+        Set Status_Help Field AppCfg.ParamType to "Tipo del parámetro (Integer, String, Json,...)"
+        Set Field_Option Field AppCfg.ParamType DD_REQUIRED to True
+        Set Field_Value_Table Field AppCfg.ParamType to ParameterTypes
+
+        Set Field_Label_Long Field AppCfg.Value to "Valor del parámetro"
+        Set Field_Label_Short Field AppCfg.Value to "Valor"
+        Set Status_Help Field AppCfg.Value to "Valor del parámetro almacenado en texto"
+        Set Field_Option Field AppCfg.Value DD_REQUIRED to True
+        Set Field_Validate_msg Field AppCfg.Value to get_zValidateErrValue
+
+        Set Field_Label_Long Field AppCfg.Categories to "Categorías"
+        Set Field_Label_Short Field AppCfg.Categories to "Categorías"
+        Set Status_Help Field AppCfg.Categories to "Categorías a las que pertenece el parámetro"
+
+        Set Field_Label_Long Field AppCfg.Notes to "Observaciones"
+        Set Field_Label_Short Field AppCfg.Notes to "Observaciones"
+        Set Status_Help Field AppCfg.Notes to "Observaciones"
+
+        Set Status_Help Field AppCfg.DbCreateCLT to "Fecha de creación del registro"
+        Set Field_Label_Long Field AppCfg.DbCreateCLT to "Fecha de creación"
+        Set Field_Label_Short Field AppCfg.DbCreateCLT to "Fecha de creación"
+
+        Set Status_Help Field AppCfg.DbCreateCLT_Bias to "Bias Fecha de creación del registro"
+        Set Field_Label_Long Field AppCfg.DbCreateCLT_Bias to "Bias Fecha de creación"
+        Set Field_Label_Short Field AppCfg.DbCreateCLT_Bias to "Bias Fecha de creación"
+
+        Set Field_Label_Long Field AppCfg.DbLastUpdateCLT to "Fecha de última modificación"
+        Set Field_Label_Short Field AppCfg.DbLastUpdateCLT to "Fecha de última modificación"
+        Set Status_Help Field AppCfg.DbLastUpdateCLT to "Fecha de última modificación del registro"
+
+        Set Field_Label_Long Field AppCfg.DbLastUpdateCLT_Bias to "Bias fecha de última modificación"
+        Set Field_Label_Short Field AppCfg.DbLastUpdateCLT_Bias to "Bias fecha de última modificación"
+        Set Status_Help Field AppCfg.DbLastUpdateCLT_Bias to "Bias fecha de última modificación del registro"
+
+    End_Procedure
+    
+    Function zValidateErrValue Integer iColumn String sValue Returns Boolean
+        //------
+        // Comprobación de valores correctos en Value con respecto a ParamType
+        //------
+        String sValueParamType
+        Handle hoJson
+        Boolean bOk
+        //------
+        Get Field_Current_Value Field AppCfg.ParamType to sValueParamType
+        //------
+        //-- B => Boolean --
+        If ((sValueParamType = "B") and not ((sValue = "True") or (sValue = "False"))) Begin
+            Send zData_Set_Warning iColumn DFERR_OPERATOR "Valor no válido para un Boolean"
+            Function_Return True
+        End
+        //--  I => Integer --
+        If ((sValueParamType = "I") and not (zIsOnlyDecDigits(sValue))) Begin
+            Send zData_Set_Warning iColumn DFERR_OPERATOR "Valor no válido para un Integer"
+            Function_Return True
+        End
+        //-- J => Json --
+        If (sValueParamType = "J") Begin
+            Get Create (RefClass(cJsonObject)) to hoJson
+            Get ParseString of hoJson sValue to bOk
+            Send Destroy of hoJson
+            If (not (bOk)) Begin
+                Send zData_Set_Warning iColumn DFERR_OPERATOR "Valor no válido para Json"
+                Function_Return True
+            End
+        End
+        //-- N => Numbers --
+        If (sValueParamType = "N" and not (zIsOnly_BaseStrings(Self, sValue, "0123456789."))) Begin
+            Send zData_Set_Warning iColumn DFERR_OPERATOR "Valor no válido para un Number"
+            Function_Return True            
+        End        
+        If (sValueParamType = "N" and (zIsOnly_BaseStrings(Self, sValue, "0123456789."))) Begin
+            If (SizeOfArray(StrSplitToArray(sValue,".")) > 2) Begin
+                Send zData_Set_Warning iColumn DFERR_OPERATOR "Valor no válido para un Number"
+                Function_Return True            
+            End
+        End
+        // S => String
+        // Todo en esta vida es una cadena        
+    End_Function
+	
+	Procedure Update
+        Forward Send Update
+        //------
+        Get zSortMultiValues (AppCfg.Categories)   to AppCfg.Categories
+        Get zSortMultiValues (AppCfg.Apps)         to AppCfg.Apps       
+    End_Procedure
+End_Class
+
+Function zAppParam Global String sParamName String sOptAppName Returns String
+//------
+// Obtener un parametro de unas APPs especificas,
+// de manera NO ESTRICTA (no hay Error si no encuentra valor satisfactorio)
+//------
+    String sAppName
+    //------
+    If (num_arguments >=2) Move sOptAppName to sAppName
+    Else Get psProduct of ghoApplication to sAppName
+    //------
+    Send zMultiTrim (&sParamName) (&sAppName)
+    //------
+    For_All AppCfg by Index.3
+        Constrain AppCfg.ParamName eq sParamName
+        Do 
+        If (zChkValueInMultiTag(sAppName,AppCfg.Apps)) Function_Return AppCfg.Value
+    End_For_All
+    //------
+    Function_Return ""
+End_Function
+
+Function zAppParam_Strict Global String sParamName String sOptAppName Returns String
+//------
+// Obtener un parametro de unas APPs especificas,
+// de manera ESTRICTA (hay Error si no encuentra valor satisfactorio)
+//------
+    String sAppName sRetValue
+    //------
+    If (num_arguments >=2) Move sOptAppName to sAppName
+    Else Get psProduct of ghoApplication to sAppName
+    //------
+    Get zAppParam sParamName sAppName to sRetValue
+    If (sRetValue = "") Send UserError ("No se encuentra valor para el parámetro:"*sParamName)
+    //------
+    Function_Return sRetValue
+End_Function
