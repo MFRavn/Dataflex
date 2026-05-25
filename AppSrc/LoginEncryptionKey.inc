@@ -1,2 +1,2 @@
 // Studio generated login encryption key
-Set psEncryptPassword to "CRiZ*7BBxx7lYDB\^^OmX#NJ4a70$QmsHs+#fQ8o"
+Set psEncryptPassword to "m[mhA/tk]=K]p-hNiE|QYu/?Op(9h~O|wZ`Dby9("

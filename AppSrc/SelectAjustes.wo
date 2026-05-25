@@ -1,0 +1,109 @@
+﻿// C:\DataFlex Projects\FutbolDataControl\AppSrc\SelectAjustes.wo
+// SelectAjustes
+//
+
+Use cWebView.pkg
+Use cWebList.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+Use cWebColumnButton.pkg
+Use cWebColumn.pkg
+Use ZoomAjustes.wo
+
+Use cWebAppUserDataDictionary.dd
+
+Object oSelectAjustes is a cWebView
+    Set psCaption to "Administración de Usuarios"
+    Set peWebViewStyle to wvsDrilldown
+    Set peViewType to vtSelect
+    Set piColumnCount to 12
+    Set pbShowCaption to False
+    Set piMaxWidth to 1024
+
+    Object oWebAppUser_DD is a cWebAppUserDataDictionary
+    End_Object 
+
+    Set Main_DD to oWebAppUser_DD
+    Set Server  to oWebAppUser_DD
+
+    Object oList is a cWebList
+        Set piColumnSpan to 12
+        Set psCSSClass to "MobileList"
+        Set pbServerOnRowClick to True
+        Set pbFillHeight to True
+        Set pbShowHeader to True
+        Set piSortColumn to 0
+
+        Object oWebAppUserLoginName is a cWebColumn
+            Entry_Item WebAppUser.LoginName
+            Set psCaption to "Usuario"
+            Set piWidth to 200
+        End_Object 
+
+        Object oWebAppUserFullName is a cWebColumn
+            Entry_Item WebAppUser.FullName
+            Set psCaption to "Nombre Completo"
+            Set piWidth to 300
+        End_Object 
+
+        // IMPORTANTE: Quitamos la columna de Password. No es seguro mostrar el Hash en una lista.
+
+        Object oDetailButton is a cWebColumnButton
+            Set psCaption to "Editar"
+            Set piWidth to 80
+            Set pbFixedWidth to True
+            Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
+            Set peAlign to alignRight
+
+            WebRegisterPath ntNavigateForward oZoomAjustes
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                // CAMBIO: Movemos False para que en el Zoom se pueda EDITAR la contraseña
+                Move False to NavigateData.bReadOnly
+            End_Procedure
+        End_Object 
+
+        Procedure OnRowClick String sRowId
+            // Hacemos que al tocar la fila se comporte igual que el botón de editar
+            Send NavigatePath of oDetailButton
+        End_Procedure
+
+    End_Object 
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSearch is a cWebMenuItem
+            Set psCSSClass to "WebPromptMenuItem"
+            Set psCaption to "Buscar"
+            Procedure OnClick
+                Send Search of oList
+            End_Procedure
+        End_Object 
+
+        Object oNewButton is a cWebMenuItem
+            Set psCSSClass to "WebClearMenuItem"
+            Set psCaption to "Nuevo Usuario"
+
+            WebRegisterPath ntNavigateForward oZoomAjustes
+
+            Procedure OnClick
+                Send NavigatePath
+            End_Procedure
+
+            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+                Move True to NavigateData.bNewRecord
+                Move False to NavigateData.bReadOnly
+            End_Procedure
+        End_Object 
+    End_Object 
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        WebSet pbRender of oNewButton to True
+        WebSet pbRender of oDetailButton to True
+    End_Procedure
+
+End_Object

@@ -69,33 +69,11 @@
 		</Table>
 		<Table>
 			<tableNumber>7</tableNumber>
-			<tableName>hijoentrenador</tableName>
-			<DDClasses>
-				<DDClass>
-					<className>chijoentrenadorDataDictionary</className>
-					<classFile>chijoentrenadorDataDictionary.dd</classFile>
-					<preferred>true</preferred>
-				</DDClass>
-			</DDClasses>
-		</Table>
-		<Table>
-			<tableNumber>8</tableNumber>
 			<tableName>hijojugador</tableName>
 			<DDClasses>
 				<DDClass>
 					<className>chijojugadorDataDictionary</className>
 					<classFile>chijojugadorDataDictionary.dd</classFile>
-					<preferred>true</preferred>
-				</DDClass>
-			</DDClasses>
-		</Table>
-		<Table>
-			<tableNumber>9</tableNumber>
-			<tableName>nietodehijos</tableName>
-			<DDClasses>
-				<DDClass>
-					<className>cnietodehijosDataDictionary</className>
-					<classFile>cnietodehijosDataDictionary.dd</classFile>
 					<preferred>true</preferred>
 				</DDClass>
 			</DDClasses>

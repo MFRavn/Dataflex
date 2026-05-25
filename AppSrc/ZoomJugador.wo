@@ -1,191 +1,211 @@
-﻿Use cWebView.pkg
-Use cWebPanel.pkg
-Use cWebForm.pkg 
-Use cWebGroup.pkg
-Use cWebMenuGroup.pkg 
-Use cWebMenuItem.pkg
+﻿// C:\DataFlex Projects\FutbolDataControl\AppSrc\ZoomJugador.wo
+// ZoomJugador
+//
 
+Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+Use cWebForm.pkg
+Use cWebGroup.pkg
+Use cWebGrid.pkg
+Use cWebColumn.pkg
+Use cWebColumnButton.pkg
+
+
+// Vistas de selección para las lupas
+Use SelectEquipo.wo
+Use SelectPosicion.wo
+Use SelectJugadorPosicion.wo
+
+
+// Diccionarios de datos
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 Use cjugadorDataDictionary.dd
-
 Use cposicionDataDictionary.dd
 Use cjugadorposicionDataDictionary.dd
 
 Object oZoomJugador is a cWebView
-
-    // Your DDO structure will go here
-    Object oLigaDD is a cligaDataDictionary
-    End_Object
-    
-    Object oEquipoDD is a cequipoDataDictionary
-        Set DDO_Server to oLigaDD
-    End_Object
-    
-    Object oJugadorDD is a cjugadorDataDictionary
-        Set DDO_Server to oEquipoDD
-    End_Object
-    
-    Object oPosicionDD is a cposicionDataDictionary
-    End_Object
-    
-    Object oJugadorPosicionDD is a cjugadorposicionDataDictionary
-        Set DDO_Server to oJugadorDD
-        Set DDO_Server to oPosicionDD
-        
-        Set Constrain_File to jugador.File_Number
-    End_Object
-    
-    
-    Set Main_DD to oJugadorDD
-    Set Server to oJugadorDD 
-    
-    Set peWebViewStyle to wvsDrillDown
+    Set piColumnCount to 12
+    Set psCaption to "ZoomJugador"
+    Set peWebViewStyle to wvsDrilldown
     Set peViewType to vtZoom
     Set pbShowCaption to False
-    Set Verify_Save_msg to 0 // don't confirm saves
-    
-    Set psCaption to "ZoomJugador"
-
+    Set Verify_Save_Msg to 0
     Set piMaxWidth to 1024
-    Set piColumnCount to 12
 
+
+    // --- Definición de DDOs ---
+    Object oposicion_DD is a cposicionDataDictionary
+    End_Object
+    
+    Object oliga_DD is a cligaDataDictionary
+    End_Object 
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server To oliga_DD
+    End_Object 
+
+    Object ojugador_DD is a cjugadorDataDictionary
+        Set DDO_Server To oequipo_DD
+    End_Object 
+    
+    // DDO Intermedio: Alimenta la lista de posiciones del jugador
+    Object ojugadorposicion_DD is a cjugadorposicionDataDictionary
+        Set DDO_Server to ojugador_DD
+        Set DDO_Server to oposicion_DD
+        // Esto filtra las posiciones para que pertenezcan solo al jugador actual
+        Set Constrain_file to jugador.File_Number
+    End_Object
+
+    Set Main_DD to ojugador_DD
+    Set Server  to ojugador_DD
+
+    // TODO el contenido visual debe estar dentro de este Panel para evitar el Error 999
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 12
-        WebSetResponsive piColumnCount rmMobile to 6
+        WebSetResponsive piColumnCount rmMobile to 4
         
-        // place controls here
-        // Your view will grow as controls are added
-        
-        Object oNombre_Form is a cWebForm
+        // Datos Personales
+        Object ojugadorNombre is a cWebForm
             Entry_Item jugador.Nombre
             Set piColumnSpan to 6
-            Set psLabel to "Nombre"
+            Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-        End_Object
-        
-                    
-        Object oApellido_Form is a cWebForm
+            Set psLabel to "Nombre"
+        End_Object 
+
+        Object ojugadorApellido is a cWebForm
             Entry_Item jugador.Apellido
             Set piColumnSpan to 6
             Set piColumnIndex to 6
-            Set psLabel to "Apellido"
             Set peLabelPosition to lpTop
-        End_Object
+            Set psLabel to "Apellido"
+        End_Object 
 
-        // This shows how using groups can be an effective to create a responsive view.
-        Object oDetalles_Group is a cWebGroup
-            Set piColumnCount to 12
-            Set piColumnSpan to 12
-            Set psCaption to "Detalles"
-        
-            WebSetResponsive piColumnCount rmMobile to 1
-            
-            Object oNacionalidad_Form is a cWebForm
-                Entry_Item jugador.Nacionalidad
-                Set piColumnSpan to 6
-                Set psLabel to "Nacionalidad"
-                Set peLabelPosition to lpTop
-            End_Object            
-
-            Object oEquipo_Form is a cWebForm
-                Entry_Item equipo.Nombre                                
-                Set piColumnSpan to 6
-                Set piColumnIndex to 6
-                Set psLabel to "Equipo"
-                Set peLabelPosition to lpTop
-                Set pbPromptButton to True
-                
-                WebRegisterPath ntNavigateForward oSelectEquipo
-                
-                Procedure OnPrompt
-                    Forward Send OnPrompt
-                    
-                    Send NavigatePath    
-                End_Procedure
-                               
-            End_Object            
-        End_Object
-
-        Object oPosiciones_Group is a cWebGroup
-            Set piColumnCount to 12
-            Set piColumnSpan to 12
+        Object ojugadorNacionalidad is a cWebForm
+            Entry_Item jugador.Nacionalidad
+            Set piColumnSpan to 5
             Set piColumnIndex to 0
-            Set psCaption to "Posiciones"
-        
-            WebSetResponsive piColumnCount rmMobile to 1
-            
-            Object oPosicionesJugador_btn is a cWebButton
-                Set psCaption to "Editar posiciones"
-                Set piColumnIndex to 0
-                Set piColumnSpan to 2
-                
-                WebRegisterPath ntNavigateForward oSelectJugadorPosicion Self
-                Procedure OnClick
-                    Send NavigatePath
-                End_Procedure
-                            
-            End_Object      
-                      
-            Object oPosicionesJugador_List is a cWebList
-                Set Server to oJugadorPosicionDD
-                Set pbServerOnRowClick to False
-                
-                Object oPosicionNombre_Col is a cWebColumn
-                    Entry_Item posicion.Nombre
-                End_Object
-            End_Object            
-        End_Object
-        
-    End_Object 
+            Set peLabelPosition to lpTop
+            Set psLabel to "Nacionalidad"
+        End_Object 
+
+        Object oequipoNombre is a cWebForm
+            Entry_Item equipo.Nombre
+            Set piColumnSpan to 7
+            Set piColumnIndex to 5
+            Set peLabelPosition to lpTop
+            Set psLabel to "Equipo"
+            Set pbPromptButton to True
+
+            WebRegisterPath ntNavigateForward oSelectEquipo
+
+            Procedure OnPrompt
+                Send NavigatePath
+            End_Procedure
+        End_Object 
     
-    // add action menu items here
-    // we've included some common buttons 
+    // --- Gestión de Posiciones (N:M) ---
+    Object oPosicionesGroup is a cWebGroup
+        Set psCaption to "Posiciones del Jugador"
+        Set piColumnSpan to 12
+        Set pbShowCaption to True
+        
+        // Lista de solo lectura para visualizar las posiciones actuales
+        Object oPosicionesList is a cWebList
+            Set Server to ojugadorposicion_DD
+            Set piColumnSpan to 12
+            Set pbFillHeight to False
+            Set piMinHeight to 150
+            Set pbDataAware to True
+            
+            // Columna para seleccionar posición
+            Object oPosicionNombreCol is a cWebColumn
+                Entry_Item posicion.Nombre
+                Set psCaption to "Posición"
+                Set piWidth to 100
+            End_Object
+        End_Object
+            
+            // Botón para ir a la nueva vista de edición
+            Object oBtnEditarPosiciones is a cWebButton
+                    Set psCaption to "Editar Posiciones"
+                    Set piColumnSpan to 4
+                    Set piColumnIndex to 4
+                    
+                    WebRegisterPath ntNavigateForward oSelectJugadorPosicion
+                               
+                   Procedure OnClick
+                        
+                        Send NavigatePath
+                   End_Procedure
+                   
+                   // Solo habilitar si el jugador ya existe
+                   Procedure Refresh Integer eMode
+                        Boolean bSynching
+                        Forward Send Refresh eMode
+                        
+                        // Obtenemos si la App está sincronizando
+                        Get AppSynching of ghoWebApp to bSynching
+                        
+                        // SOLO hacemos el WebSet si NO estamos en fase de carga inicial (AppSynching)
+                        If (not(bSynching)) Begin
+        
+                        WebSet pbEnabled to (HasRecord(ojugador_DD))
+                        End
+                    End_Procedure
+                End_Object
+            End_Object
+    End_Object
+   
+   
+    // Gestión de Menús y Navegación
     Object oActionGroup is a cWebMenuGroup
-        Set psGroupName to "MainActions"
 
         Object oSaveBtn is a cWebMenuItem
-            Set psCaption to C_$Save
             Set psCSSClass to "WebSaveMenuItem"
-        
+            Set psCaption to "Save"
+
             Procedure OnClick
                 Send Request_Save
             End_Procedure
-        End_Object
-        
+
+        End_Object 
+
         Object oEditBtn is a cWebMenuItem
-            Set psCaption to C_$CategoryEdit
             Set psCSSClass to "WebEditMenuItem"
+            Set psCaption to "Edit"
             Procedure OnClick
                 Send ChangeEditMode True
                 Send SetActionButtons
             End_Procedure
+
         End_Object 
-        
+
         Object oDeleteBtn is a cWebMenuItem
-            Set psCaption to C_$Delete
             Set psCSSClass to "WebDeleteMenuItem"
-            Set peActionDisplay to adMenu            
-            
+            Set psCaption to "Delete"
+            Set peActionDisplay to adMenu
+
             Procedure OnClick
                 Send Request_Delete
             End_Procedure
-        End_Object
 
-        Object oCancelChangesBtn is a cWebMenuItem
-            Set psCaption to C_$ToolTipClear
-            Set peActionDisplay to adMenu            
-                        
-            Procedure OnClick
-                // this will undo any unchanged saves and show the latest
-                Send RefreshRecord
-            End_Procedure
         End_Object 
 
-    End_Object
+        Object oCancelChangesBtn is a cWebMenuItem
+            Set psCSSClass to "WebIcon_Refresh"
+            Set psCaption to "Clear Changes"
+            Set peActionDisplay to adMenu
+            Procedure OnClick
+                Send RefreshRecord
+            End_Procedure
 
-    // This can be used to show and hide buttons based on context.
-    // This can be called any time the view is active.
+        End_Object 
+    End_Object 
+
     Procedure SetActionButtons
         tWebNavigateData NavigateData
         Boolean bHasRecord
@@ -193,36 +213,26 @@ Object oZoomJugador is a cWebView
 
         Get Server to hoDD
         Get GetNavigateData to NavigateData
-        
-        If (hoDD) Begin
-            Get HasRecord of hoDD to bHasRecord
-        End
-        Else Begin
-            Move False to bHasRecord
-        End
+        Get HasRecord of hoDD to bHasRecord
 
-        // let's hide all buttons and then show the ones we want
-        WebSet pbRender of oEditBtn to False 
+        // let's hide all buttons and then Show the ones we want
+        WebSet pbRender of oEditBtn to False
         WebSet pbRender of oSaveBtn to False
         WebSet pbRender of oCancelChangesBtn to False
         WebSet pbRender of oDeleteBtn to False
-        
-        WebSet pbVisible of oPosicionesJugador_btn to False
 
-        If (NavigateData.bReadOnly) Begin 
-            WebSet pbRender of oEditBtn to True 
+        If (NavigateData.bReadOnly) Begin
+            WebSet pbRender of oEditBtn to True
         End
         Else Begin
             WebSet pbRender of oSaveBtn to True
             WebSet pbRender of oCancelChangesBtn to True
             WebSet pbRender of oDeleteBtn to bHasRecord
-            
-            WebSet pbVisible of oPosicionesJugador_btn to True
         End
     End_Procedure
 
-    // this will close the view after a save
     Procedure OnViewSaved Handle hoServer Boolean bChanged
+        // Close after save
         Send NavigateClose Self
     End_Procedure
 
@@ -231,48 +241,44 @@ Object oZoomJugador is a cWebView
         Send NavigateClose Self
     End_Procedure
 
-    // Add code to customize your Zoom View based on how it was invoked.
-    // Use NavigateData to determine the context this view will be used in.
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
-
-        // if this view is being used in multiple contexts, you may need a block of code
-        // like this to handle customizations. This would include hiding rows and buttons
-        // (WebSet pbRender) and changing the values of various captions.
+        Handle hoDD
+        RowID riJugador
+        Get Server to hoDD
+        
+        Forward Send OnNavigateForward NavigateData hoInvokingView hoInvokingObject
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main file Select to Zoom.
-                // This is the most typical way to navigate to a zoom.
+                // PASO CLAVE: Convertir el String sRowId a un tipo RowID real
+                Move (DeserializeRowID(NavigateData.sRowId)) to riJugador
+                // Ahora pasamos la variable riJugador (que ya es RowID) en lugar del String
+                Send FindByRowId of hoDD jugador.File_Number riJugador
                 Case Break
-                
-            Case (NavigateData.eNavigateType = nfFromParent)
-                // If from parent, this is a constrained drill down.
-                // If needed, you could check NavigateData.iTable to determine the constraining parent.
-                // This would be unusual - normally you drill down from a parent to a list (Select view).
-                Case Break
-                
-            Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent Zoom from a Zoom. 
-                // This is unusual, but it might be used for adding a new child record.
-                Case Break
-                
-            Case Else // must be nfUndefined
-                // This may be the start of a query or this may be used for some kind of custom operation.
-                // You may want to check NavigateData.NamedValues.
-                  
-        Case End
 
-        // Action buttons can be changed dynamically during a Zoom's display lifetime.
-        // It's best to set these buttons in their own procedure so you can change later.
-        Send SetActionButtons
+            //Case (NavigateData.eNavigateType = nfFromParent)
+                // If from parent, this is a constrained drill down.
+                //Case Break
+
+            //Case (NavigateData.eNavigateType = nfFromChild)
+                // If from child, this is a probably a parent Zoom from a Zoom.
+                //Case Break
+
+            //Case Else // must be nfUndefined
+
+        Case End
         
-        If (HasRecord(Server(Self))) Begin 
-            Send SetHeaderCaption    ("Jugador:"*jugador.Nombre)
-            Send SetBreadcrumbCaption (jugador.Nombre*jugador.Apellido)
+        If (HasRecord(hoDD)) Begin 
+            // Corregido: Usamos '+' y Trim para una mejor presentación del título
+            Send SetHeaderCaption ("Jugador: " + Trim(jugador.Nombre) + " " + Trim(jugador.Apellido) + " (" + Trim(equipo.Nombre) + ")")
+            Send SetBreadcrumbCaption (Trim(jugador.Nombre) + " " + Trim(jugador.Apellido))
         End
         Else Begin 
-            Send SetHeaderCaption     "Nuevo jugador"
+            Send SetHeaderCaption "Nuevo Jugador"
             Send SetBreadcrumbCaption "Nuevo"
         End
+
+        Send SetActionButtons
+
     End_Procedure
 
-End_Object
+End_Object 

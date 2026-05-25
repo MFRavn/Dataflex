@@ -9,31 +9,26 @@
     <link rel="shortcut icon" href="favicon.ico" sizes="48x48" />
     
     <!-- Hiding Safari User Interface Components -->
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<!--<link rel="manifest" href="manifest.json">-->
     
     <!-- DataFlex Engine -->
-	<link href="DfEngine/system.css" rel="stylesheet" type="text/css" />
+    <link href="DfEngine/system.css" rel="stylesheet" type="text/css" />
     <!-- <link href="CssThemes/Df_Material/theme.css" rel="stylesheet" type="text/css" /> Uncomment this line to optimize loading time, not that the loaded theme should match psTheme!  -->
     <link href="CssStyle/application.css" rel="stylesheet" type="text/css" />
-	
-    <script type="text/javascript" src="DfEngine/df-min.js?v=25.10"></script>
+        
+    <script src="DfEngine/df-min.js"></script>
     
     <!-- DataFlex Custom Controls (do not remove this line, used for automatic insertion) -->
-	
+    
     
     <!-- Initialization of the WebApp -->
     <script>
         var oWebApp = new df.WebApp("WebServiceDispatcher.wso");
-		
-		function initWebApp() {
-			oWebApp.displayApp("#viewport");
-		}
+        
+        oWebApp.displayApp("#viewport");
     </script>
-
-	<script src="https://resources.datacontrol.es/zDf25/zDfEngine/zdf-include.js?v=25.10"></script>
-	
+    
     <style>
         html, body{
         height: 100%;

@@ -1,0 +1,46 @@
+﻿Use DataDict.pkg
+Use cPasswordHasher.pkg
+
+Open WebAppUser
+Open WebAppSession
+
+Class cWebAppUserDataDictionary is a DataDictionary
+    
+    Procedure Construct_Object
+        Forward Send Construct_Object
+        Set Main_File to WebAppUser.File_Number
+
+        Set Add_Client_File to WebAppSession.File_Number
+
+        Set Foreign_Field_Option DD_KEYFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_KEYFIELD DD_FINDREQ to True
+        Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
+        Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
+
+        Set Field_Mask_Type Field WebAppUser.Rights to Mask_Numeric_Window
+        Set Field_Mask Field WebAppUser.Rights to "##"
+
+        Set Field_Option Field WebAppUser.LastLogin DD_DISPLAYONLY to True
+        
+        //Nueva línea para que la contraseña sea editable
+        Set Field_Option Field WebAppUser.Password DD_NoPut to False 
+    End_Procedure
+        
+        // Dentro de tu cWebAppUserDataDictionary.dd, antes del último End_Class
+
+//    Function HashPassword String sPassword Returns String
+//        String sHash
+//        Handle hoSessionManager
+//        
+//        // Obtenemos el ID del gestor de sesiones que siempre está activo
+//        Get ghoWebSessionManager to hoSessionManager
+//        
+//        // Si el gestor existe, ciframos la clave usando la función oficial
+//        If (hoSessionManager <> 0) Begin
+//            Get GeneratePasswordHash of hoSessionManager sPassword to sHash
+//        End
+//        
+//        Function_Return sHash
+//    End Function
+
+End_Class

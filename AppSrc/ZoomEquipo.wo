@@ -1,168 +1,312 @@
-﻿Use cWebView.pkg
+﻿// C:\DataFlex Projects\FutbolDataControl\AppSrc\ZoomEquipo.wo
+// ZoomEquipo
+//
+
+Use cWebView.pkg
 Use cWebPanel.pkg
-Use cWebForm.pkg 
-Use cWebGroup.pkg
-Use cWebMenuGroup.pkg 
+Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
+Use cWebForm.pkg
+Use SelectLiga.wo
+Use cWebImage.pkg
+Use cWebFileUploadButton.pkg
+
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
-Use centrenadorDataDictionary.dd
 Use cjugadorDataDictionary.dd
-Use cjugadorposicionDataDictionary.dd
-Use cposicionDataDictionary.dd
+Use centrenadorDataDictionary.dd
 
 Object oZoomEquipo is a cWebView
-
-    // Your DDO structure will go here
-    Object oLigaDD is a cligaDataDictionary
-    End_Object
-    
-    Object oEquipoDD is a cequipoDataDictionary
-        Set DDO_Server to oLigaDD
-    End_Object
-    
-    Object oEntrenadorDD is a centrenadorDataDictionary
-        Set DDO_Server to oEquipoDD
-    End_Object
-    
-    Object oJugadorDD is a cjugadorDataDictionary
-        Set DDO_Server to oEquipoDD
-    End_Object 
-
-    Object oPosicionDD is a cposicionDataDictionary
-    End_Object 
-
-    Object oJugadorPosicionDD is a cjugadorposicionDataDictionary
-        Set DDO_Server to oJugadorDD
-        Set DDO_Server to oPosicionDD
-    End_Object
-
-    
-    Set Main_DD to oEquipoDD
-    Set Server to oEquipoDD
-    
-    Set peWebViewStyle to wvsDrillDown
+    Set piColumnCount to 12
+    Set psCaption to "ZoomEquipo"
+    Set peWebViewStyle to wvsDrilldown
     Set peViewType to vtZoom
     Set pbShowCaption to False
-    Set Verify_Save_msg to 0 // don't confirm saves
-    Set psCaption to "ZoomEquipo"
-
+    Set Verify_Save_Msg to 0
     Set piMaxWidth to 1024
-    Set piColumnCount to 12
+
+    Object oliga_DD is a cligaDataDictionary
+    End_Object 
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server To oliga_DD
+    End_Object 
+    
+    Object oentrenador_DD is a centrenadorDataDictionary
+        Set DDO_Server to oequipo_DD
+        Set Constrain_file to equipo.File_Number
+    End_Object
+    
+    Object ojugador_DD is a cjugadorDataDictionary
+        Set DDO_Server to oequipo_DD
+        Set Constrain_file to equipo.File_Number
+    End_Object
+
+    Set Main_DD To oequipo_DD
+    Set Server  to oequipo_DD
+    
+    // --- FUNCIONES DE CARPETA (Estilo ejemplo DataFlex) ---
+    
+    Function EquipoEscudosFolder Returns String
+        String sPath
+        Get psAppHtmlPath of (phoWorkspace(ghoApplication)) to sPath
+        Move (sPath + "\Images\Escudos") to sPath
+        Function_Return sPath
+    End_Function
+
+    Procedure RegisterEscudosFolder
+        String sPath
+        Get EquipoEscudosFolder to sPath
+        Send RegisterDownloadFolder of ghoWebResourceManager sPath
+    End_Procedure
+    
+    // Ejecutar el registro de la carpeta al inicializar la vista
+    Send RegisterEscudosFolder
+
+    // --- DISEÑO DE LA VISTA ---
 
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 12
-        WebSetResponsive piColumnCount rmMobile to 6
-        
-        // place controls here
-        // Your view will grow as controls are added
-        
-        Object oNombre_Form is a cWebForm
+        WebSetResponsive piColumnCount rmMobile to 4
+
+        Object oequipoNombre is a cWebForm
             Entry_Item equipo.Nombre
-            Set piColumnSpan to 0
-            Set psLabel to "Nombre"
+            Set piColumnSpan to 6
+            Set piColumnIndex to 0
             Set peLabelPosition to lpTop
-        End_Object
+            Set psLabel to "Equipo"
+        End_Object 
 
-        // This shows how using groups can be an effective to create a responsive view.
-        Object oDetalles_Group is a cWebGroup
-            Set piColumnCount to 12
-            Set piColumnSpan to 12
-            Set psCaption to "Detalles"
+        Object oligaNombre is a cWebForm
+            Entry_Item liga.Nombre
+            Set piColumnSpan to 5
+            Set piColumnIndex to 7
+            Set peLabelPosition to lpTop
+            Set psLabel to "Liga"
+            Set pbPromptButton to True
+
+            WebRegisterPath ntNavigateForward oSelectLiga
+
+            Procedure OnPrompt
+                Send NavigatePath
+            End_Procedure
+        End_Object 
         
-            WebSetResponsive piColumnCount rmMobile to 1
+        Object oWebImageEscudo is a cWebImage
+            Set piColumnSpan to 2
+            Set pbShowBorder to True
+            Set piColumnIndex to 10
+            Set piHeight to 180
+            Set pePosition to wiFit
             
-            Object oLiga_Form is a cWebForm
-                Entry_Item liga.Nombre
-                Set piColumnSpan to 6
-                Set psLabel to "Liga"
-                Set peLabelPosition to lpTop
-                Set pbPromptButton to True
+            WebSetResponsive piColumnIndex rmMobileLandscape to 6
+            
+            Procedure Refresh Integer eMode
+                String sPath sUrl
+                Forward Send Refresh eMode
                 
-                WebRegisterPath ntNavigateForward oSelectLiga
-                
-                Procedure OnPrompt
-                    Forward Send OnPrompt
+                If (not(AppSynching(ghoWebApp))) Begin
+                    Get EquipoEscudosFolder of oZoomEquipo to sPath
                     
-                    Send NavigatePath
-                End_Procedure                
-                
-            End_Object
-            
-            Object oPais_Form is a cWebForm
-                Entry_Item liga.Pais
-                Set piColumnSpan to 6
-                Set piColumnIndex to 6
-                Set psLabel to "Pais"
-                Set peLabelPosition to lpTop
-                Set pbReadOnly to True
-            End_Object
-        End_Object // oDetalles_Group
-        
-        Object oPlantilla_Group is a cWebGroup
-            Set piColumnCount to 12
-            Set piColumnSpan to 12
-            Set psCaption to "Plantilla"
-            
-            WebSetResponsive piColumnCount rmMobile to 1
-            
-        End_Object // oPlantilla_Group
-        
-    End_Object 
-    
-    // add action menu items here
-    // we've included some common buttons 
-    Object oActionGroup is a cWebMenuGroup
-        Set psGroupName to "MainActions"
-
-        Object oSaveBtn is a cWebMenuItem
-            Set psCaption to C_$Save
-            Set psCSSClass to "WebSaveMenuItem"
-        
-            Procedure OnClick
-                //
-                //
-                If (bOk) ;
-                    Send Request_Save
-                Else ;
-                    Send ShowInfoBox "Error"    
-                
+                    If (HasRecord(oequipo_DD)) Begin
+                        If (Trim(Equipo.Escudo) <> "") Begin
+                            Move (sPath + "\" + Trim(Equipo.Escudo)) to sPath
+                        End
+                        Else Begin
+                            Move (sPath + "\no_escudo.png") to sPath
+                        End
+                    End
+                    Else Begin
+                        Move (sPath + "\nuevo_equipo.png") to sPath
+                    End
+                    
+                    Get DownloadURL of ghoWebResourceManager sPath to sUrl
+                    WebSet psURL to sUrl
+                End
             End_Procedure
         End_Object
         
+        Object oWebFileUploadEscudo is a cWebFileUploadButton
+            Set piColumnSpan to 2
+            Set psCaption to "Subir Escudo"
+            Set piColumnIndex to 10
+            Set phoDropZone to oWebImageEscudo
+            Set pbMultiFile to False
+            Set psAccept to "image/*"
+            Set pbCapture to True
+
+            WebSetResponsive piColumnIndex rmMobileLandscape to 6
+
+            Function OnFileUpload String sFileName Integer iBytes String sMime Returns String
+                String sPath
+                Boolean bExists
+                Get UploadFolder True to sPath
+                Move (sPath + "\" + sFileName) to sPath
+                File_Exist sPath bExists
+                If (bExists) Begin
+                    EraseFile sPath
+                End
+                Function_Return sPath
+            End_Function
+            
+            Procedure OnFileFinished String sFileName String sLocalPath
+                String sExtension sDestPath sNewFileName
+
+                Forward Send OnFileFinished sFileName sLocalPath
+                
+                // 1. Obtener extensión
+
+                Move (Right(sFileName, Length(sFileName) - RightPos(".", sFileName))) to sExtension
+
+                // 2. Verificar que hay un registro de equipo cargado
+                If (sExtension <> "" and (HasRecord(oequipo_DD))) Begin
+                    Get EquipoEscudosFolder of oZoomEquipo to sDestPath
+                    
+                    // 3. Borrar escudo anterior si existe físicamente
+                    If (Trim(Equipo.Escudo) <> "") Begin
+                        EraseFile (sDestPath + "\" + Trim(Equipo.Escudo))
+                    End
+
+                    // 4. Definir nombre nuevo (ID.extensión)
+                    Move (String(Equipo.ID) + "." + sExtension) to sNewFileName
+                    Move (sDestPath + "\" + sNewFileName) to sDestPath
+                    
+                    // 5. Mover el archivo subido a la carpeta final
+                    CopyFile sLocalPath to sDestPath
+                    EraseFile sLocalPath
+
+                    // 6. ACTUALIZACIÓN SEGURA:
+                    // Para rellenar el campo escudo de la tabla equipo
+                    Set Field_Changed_Value of oequipo_DD Field Equipo.Escudo to sNewFileName
+                    
+                    // Guardamos los cambios en la base de datos
+                    Send Request_Save of oequipo_DD
+                    // 7. Refrescar el componente de imagen para ver el cambio
+                    Send Refresh of oWebImageEscudo 0 
+                End
+                Else Begin
+                    EraseFile sLocalPath
+                End
+            End_Procedure
+
+            Procedure Refresh Integer eMode
+                Boolean bReadOnly bSynching
+                Get AppSynching to bSynching
+                If (not(bSynching)) Begin
+                    Get IsViewReadOnly to bReadOnly
+                    WebSet pbEnabled to (not(bReadOnly) and HasRecord(oequipo_DD))
+                End
+            End_Procedure
+        End_Object
+        
+        // --- LISTA DE ENTRENADOR (Solo lectura) ---
+        Object oEntrenadorGroup is a cWebGroup
+            Set psCaption to "Entrenador"
+            Set piColumnSpan to 6
+            Set pbShowCaption to True
+            
+            Object oEntrenadorList is a cWebList
+                Set Server to oentrenador_DD
+                Set pbFillHeight to False
+                Set piMinHeight to 80
+                Set pbDataAware to True
+                
+                Object oEntrenadorNombre is a cWebColumn
+                    Entry_Item entrenador.Nombre
+                    Set psCaption to "Nombre"
+                    Set piWidth to 200
+                End_Object
+                
+                Object oEntrenadorApellido is a cWebColumn
+                    Entry_Item entrenador.Apellido
+                    Set psCaption to "Apellido"
+                    Set piWidth to 200
+                End_Object
+            End_Object
+        End_Object
+        
+        // --- LISTA DE JUGADORES (Solo lectura) ---
+        Object oJugadoresGroup is a cWebGroup
+            Set psCaption to "Plantilla de Jugadores"
+            Set piColumnSpan to 6
+            Set pbShowCaption to True
+            Set piColumnIndex to 6
+            
+            Object oJugadoresList is a cWebList
+                Set Server to ojugador_DD
+                Set pbFillHeight to False
+                Set piMinHeight to 300
+                Set pbDataAware to True
+
+                Object oJugadorNombre is a cWebColumn
+                    Entry_Item jugador.Nombre
+                    Set psCaption to "Nombre"
+                    Set piWidth to 200
+                End_Object
+
+                Object oJugadorApellido is a cWebColumn
+                    Entry_Item jugador.Apellido
+                    Set psCaption to "Apellido"
+                    Set piWidth to 200
+                End_Object
+
+                Object oJugadorNacionalidad is a cWebColumn
+                    Entry_Item jugador.Nacionalidad
+                    Set psCaption to "Nacionalidad"
+                    Set piWidth to 150
+                End_Object
+            End_Object
+        End_Object
+    End_Object
+    
+    // --- ACCIONES (BOTONES) ---
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSaveBtn is a cWebMenuItem
+            Set psCSSClass to "WebSaveMenuItem"
+            Set psCaption to "Save"
+
+            Procedure OnClick
+                Send Request_Save
+            End_Procedure
+
+        End_Object 
+
         Object oEditBtn is a cWebMenuItem
-            Set psCaption to C_$CategoryEdit
             Set psCSSClass to "WebEditMenuItem"
+            Set psCaption to "Edit"
             Procedure OnClick
                 Send ChangeEditMode True
                 Send SetActionButtons
             End_Procedure
+
         End_Object 
-        
+
         Object oDeleteBtn is a cWebMenuItem
-            Set psCaption to C_$Delete
             Set psCSSClass to "WebDeleteMenuItem"
-            Set peActionDisplay to adMenu            
-            
+            Set psCaption to "Delete"
+            Set peActionDisplay to adMenu
+
             Procedure OnClick
                 Send Request_Delete
             End_Procedure
-        End_Object
 
-        Object oCancelChangesBtn is a cWebMenuItem
-            Set psCaption to C_$ToolTipClear
-            Set peActionDisplay to adMenu            
-                        
-            Procedure OnClick
-                // this will undo any unchanged saves and show the latest
-                Send RefreshRecord
-            End_Procedure
         End_Object 
 
-    End_Object
+        Object oCancelChangesBtn is a cWebMenuItem
+            Set psCSSClass to "WebIcon_Refresh"
+            Set psCaption to "Clear Changes"
+            Set peActionDisplay to adMenu
+            Procedure OnClick
+                Send RefreshRecord
+            End_Procedure
 
-    // This can be used to show and hide buttons based on context.
-    // This can be called any time the view is active.
+        End_Object 
+    End_Object 
+    
+    
+
     Procedure SetActionButtons
         tWebNavigateData NavigateData
         Boolean bHasRecord
@@ -170,22 +314,16 @@ Object oZoomEquipo is a cWebView
 
         Get Server to hoDD
         Get GetNavigateData to NavigateData
-        
-        If (hoDD) Begin
-            Get HasRecord of hoDD to bHasRecord
-        End
-        Else Begin
-            Move False to bHasRecord
-        End
+        Get HasRecord of hoDD to bHasRecord
 
-        // let's hide all buttons and then show the ones we want
-        WebSet pbRender of oEditBtn to False 
+        // let's hide all buttons and then Show the ones we want
+        WebSet pbRender of oEditBtn to False
         WebSet pbRender of oSaveBtn to False
         WebSet pbRender of oCancelChangesBtn to False
         WebSet pbRender of oDeleteBtn to False
 
-        If (NavigateData.bReadOnly) Begin 
-            WebSet pbRender of oEditBtn to True 
+        If (NavigateData.bReadOnly) Begin
+            WebSet pbRender of oEditBtn to True
         End
         Else Begin
             WebSet pbRender of oSaveBtn to True
@@ -194,9 +332,9 @@ Object oZoomEquipo is a cWebView
         End
     End_Procedure
 
-    // this will close the view after a save
     Procedure OnViewSaved Handle hoServer Boolean bChanged
-        Send NavigateClose Self 
+        // Close after save
+        Send NavigateClose Self
     End_Procedure
 
     // this will close the view after a delete
@@ -204,48 +342,35 @@ Object oZoomEquipo is a cWebView
         Send NavigateClose Self
     End_Procedure
 
-    // Add code to customize your Zoom View based on how it was invoked.
-    // Use NavigateData to determine the context this view will be used in.
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
-
-        // if this view is being used in multiple contexts, you may need a block of code
-        // like this to handle customizations. This would include hiding rows and buttons
-        // (WebSet pbRender) and changing the values of various captions.
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
-                // If from main, this is a probably a main file Select to Zoom.
-                // This is the most typical way to navigate to a zoom.
+                // If from main, this is a propbably a main file Select to Zoom.
                 Case Break
-                
+
             Case (NavigateData.eNavigateType = nfFromParent)
                 // If from parent, this is a constrained drill down.
-                // If needed, you could check NavigateData.iTable to determine the constraining parent.
-                // This would be unusual - normally you drill down from a parent to a list (Select view).
                 Case Break
-                
+
             Case (NavigateData.eNavigateType = nfFromChild)
-                // If from child, this is a probably a parent Zoom from a Zoom. 
-                // This is unusual, but it might be used for adding a new child record.
+                // If from child, this is a probably a parent Zoom from a Zoom.
                 Case Break
-                
+
             Case Else // must be nfUndefined
-                // This may be the start of a query or this may be used for some kind of custom operation.
-                // You may want to check NavigateData.NamedValues.
-                  
+
         Case End
-
-        // Action buttons can be changed dynamically during a Zoom's display lifetime.
-        // It's best to set these buttons in their own procedure so you can change later.
-        Send SetActionButtons
-
-        If (HasRecord(Server(Self))) Begin 
-            Send SetHeaderCaption    ("Equipo:"*equipo.Nombre)
-            Send SetBreadcrumbCaption equipo.Nombre
+        
+         If (HasRecord(Server(Self))) Begin 
+            Send SetHeaderCaption    ("Equipo:"*equipo.Nombre*liga.Nombre*"("+liga.pais+")")
+            Send SetBreadcrumbCaption (equipo.Nombre)
         End
         Else Begin 
-            Send SetHeaderCaption     "Nuevo equipo"
+            Send SetHeaderCaption     "Nuevo Equipo"
             Send SetBreadcrumbCaption "Nuevo"
         End
+
+        Send SetActionButtons
+
     End_Procedure
 
-End_Object
+End_Object 

@@ -1,0 +1,195 @@
+﻿// C:\DataFlex Projects\FutbolDataControl\AppSrc\ZoomAjustes.wo
+// ZoomAjustes
+
+
+Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebMenuGroup.pkg
+Use cWebMenuItem.pkg
+Use cWebForm.pkg
+
+Use cWebAppUserDataDictionary.dd
+
+Object oZoomAjustes is a cWebView
+    Set piColumnCount to 12
+    Set psCaption to "ZoomAjustes"
+    Set peWebViewStyle to wvsDrilldown
+    Set peViewType to vtZoom
+    Set pbShowCaption to False
+    Set Verify_Save_Msg to 0
+    Set piMaxWidth to 1024
+
+    Object oWebAppUser_DD is a cWebAppUserDataDictionary
+    End_Object 
+
+    Set Main_DD to oWebAppUser_DD
+    Set Server  to oWebAppUser_DD
+
+
+    Object oWebMainPanel is a cWebPanel
+        Set piColumnCount to 12
+        WebSetResponsive piColumnCount rmMobile to 4
+
+        Object oWebAppUserLoginName is a cWebForm
+            Entry_Item WebAppUser.LoginName
+            Set piColumnSpan to 4
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Nombre de Usuario"
+        End_Object 
+
+        // 1. CAMPO DE CONTRASEÑA SIN ENTRY_ITEM
+        Object oWebAppUserPassword is a cWebForm
+            // Hemos quitado el Entry_Item WebAppUser.Password para que no cargue el Hash
+            Set piColumnSpan to 12
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Nueva Contraseña (dejar vacío para no cambiar)"
+            Set pbPassword to True // Salen asteriscos al escribir
+        End_Object 
+
+        Object oWebAppUserRights is a cWebForm
+            Entry_Item WebAppUser.Rights
+            Set piColumnSpan to 1
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Derechos"
+        End_Object 
+
+        Object oWebAppUserFullName is a cWebForm
+            Entry_Item WebAppUser.FullName
+            Set piColumnSpan to 5
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Nombre Completo"
+        End_Object 
+
+        Object oWebAppUserLastLogin is a cWebForm
+            Entry_Item WebAppUser.LastLogin
+            Set piColumnSpan to 2
+            Set piColumnIndex to 0
+            Set peLabelPosition to lpTop
+            Set psLabel to "Ultima Conexión"
+        End_Object 
+    End_Object 
+    
+    // LÓGICA DE GUARDADO (Dentro de la Vista, fuera del Panel)
+//    Procedure Request_Save
+//        String sPass sHash
+//        Handle hoDD
+//        Get Main_DD to hoDD
+//        WebGet psValue of oWebAppUserPassword to sPass
+//        
+//        If (Trim(sPass) <> "") Begin
+//            Get HashPassword of hoDD sPass to sHash
+//            Set Field_Changed_Value of hoDD Field WebAppUser.Password to sHash
+//        End
+//
+//        Forward Send Request_Save
+//        WebSet psValue of oWebAppUserPassword to ""
+//    End_Procedure
+//    
+    //------------------------------------------------------------------------
+
+    Object oActionGroup is a cWebMenuGroup
+
+        Object oSaveBtn is a cWebMenuItem
+            Set psCSSClass to "WebSaveMenuItem"
+            Set psCaption to "Save"
+
+            Procedure OnClick
+                Send Request_Save
+            End_Procedure
+
+        End_Object 
+
+        Object oEditBtn is a cWebMenuItem
+            Set psCSSClass to "WebEditMenuItem"
+            Set psCaption to "Edit"
+            Procedure OnClick
+                Send ChangeEditMode True
+                Send SetActionButtons
+            End_Procedure
+
+        End_Object 
+
+        Object oDeleteBtn is a cWebMenuItem
+            Set psCSSClass to "WebDeleteMenuItem"
+            Set psCaption to "Delete"
+            Set peActionDisplay to adMenu
+
+            Procedure OnClick
+                Send Request_Delete
+            End_Procedure
+
+        End_Object 
+
+        Object oCancelChangesBtn is a cWebMenuItem
+            Set psCSSClass to "WebIcon_Refresh"
+            Set psCaption to "Clear Changes"
+            Set peActionDisplay to adMenu
+            Procedure OnClick
+                Send RefreshRecord
+            End_Procedure
+
+        End_Object 
+    End_Object 
+
+    Procedure SetActionButtons
+        tWebNavigateData NavigateData
+        Boolean bHasRecord
+        Handle hoDD
+
+        Get Server to hoDD
+        Get GetNavigateData to NavigateData
+        Get HasRecord of hoDD to bHasRecord
+
+        // let's hide all buttons and then Show the ones we want
+        WebSet pbRender of oEditBtn to False
+        WebSet pbRender of oSaveBtn to False
+        WebSet pbRender of oCancelChangesBtn to False
+        WebSet pbRender of oDeleteBtn to False
+
+        If (NavigateData.bReadOnly) Begin
+            WebSet pbRender of oEditBtn to True
+        End
+        Else Begin
+            WebSet pbRender of oSaveBtn to True
+            WebSet pbRender of oCancelChangesBtn to True
+            WebSet pbRender of oDeleteBtn to bHasRecord
+        End
+    End_Procedure
+
+    Procedure OnViewSaved Handle hoServer Boolean bChanged
+        // Close after save
+        Send NavigateClose Self
+    End_Procedure
+
+    // this will close the view after a delete
+    Procedure OnViewDeleted Handle hoDDO
+        Send NavigateClose Self
+    End_Procedure
+
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        Case Begin
+            Case (NavigateData.eNavigateType = nfFromMain)
+                // If from main, this is a propbably a main file Select to Zoom.
+                Case Break
+
+            Case (NavigateData.eNavigateType = nfFromParent)
+                // If from parent, this is a constrained drill down.
+                Case Break
+
+            Case (NavigateData.eNavigateType = nfFromChild)
+                // If from child, this is a probably a parent Zoom from a Zoom.
+                Case Break
+
+            Case Else // must be nfUndefined
+
+        Case End
+
+        Send SetActionButtons
+
+    End_Procedure
+
+End_Object 

@@ -1,13 +1,13 @@
 [Workspace]
 CurrentProject=WebApp.src
-Location=C:\DataFlex Projects\FutbolWebApp-main\IdeSrc\Ravn_Studio.dsk
+Location=C:\DataFlex Projects\FutbolWebApp-main\Dataflex\IdeSrc\Ravn_Studio.dsk
 CreateNew=3
 [TabWindows]
 GroupCount=1
 HorizontalGroups=1
 [TabGroup0]
 GroupSize=40
-SelectedTab=2
+SelectedTab=1
 [Window0]
 Filename=Workspace Dashboard
 ViewType=101
@@ -18,7 +18,7 @@ Right=932
 TabIndex=0
 TabGroup=0
 [Window1]
-Filename=C:\DataFlex Projects\FutbolWebApp-main\AppSrc\Login.wo
+Filename=C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectLiga.wo
 ViewType=1
 Top=21
 Left=0
@@ -27,15 +27,4 @@ Right=932
 CursorLine=0
 CursorColumn=0
 TabIndex=1
-TabGroup=0
-[Window2]
-Filename=C:\DataFlex Projects\FutbolWebApp-main\AppSrc\PaquetePrueba.pkg
-ViewType=1
-Top=21
-Left=0
-Bottom=696
-Right=932
-CursorLine=29
-CursorColumn=17
-TabIndex=2
 TabGroup=0

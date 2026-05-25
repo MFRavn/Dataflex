@@ -9,14 +9,14 @@ Object oApplication is a cApplication
 End_Object
 
 Object oWebApp is a cWebApp
-    Set psTheme to "Df_Material"
+    Set psTheme to "MyCustomTheme"
     Set peAlignView to alignCenter
     
     // It is important to set this so that all views will default
     // to drill down style views.
     Set peApplicationStyle to wvsDrillDown   
     Set peApplicationStateMode to asmHistoryAndUrls 
-    Set psEncryptPassword to "<V)r:#yeRk+gPjIYo2^.2niI#zg*Xg0VA+1Zo>0="
+    Set psEncryptPassword to "_gK?(Ki4(6.WWkjA+:/A[@{E0}IH.y|z(#Z@+T*,"
 
     Object oViewStack is a cWebViewStack
     End_Object
@@ -86,10 +86,10 @@ Object oWebApp is a cWebApp
                         End_Procedure
                     End_Object
 
-                    Object oSelectTodasLasLigasItem1 is a cWebMenuItem
-                        Set psCaption to "SelectTodasLasLigas"
+                    Object oSelectJugadorItem1 is a cWebMenuItem
+                        Set psCaption to "SelectJugador"
 
-                        WebRegisterPath ntNavigateBegin oSelectTodasLasLigas
+                        WebRegisterPath ntNavigateBegin oSelectJugador
 
                         Procedure OnClick
                             Forward Send OnClick
@@ -108,17 +108,6 @@ Object oWebApp is a cWebApp
                         End_Procedure
                     End_Object
 
-                    Object oSelectJugadorItem1 is a cWebMenuItem
-                        Set psCaption to "SelectJugador"
-
-                        WebRegisterPath ntNavigateBegin oSelectJugador
-
-                        Procedure OnClick
-                            Forward Send OnClick
-                                Send NavigatePath
-                        End_Procedure
-                    End_Object
-
                     Object oSelectJugadorPosicionItem1 is a cWebMenuItem
                         Set psCaption to "SelectJugadorPosicion"
 
@@ -130,21 +119,10 @@ Object oWebApp is a cWebApp
                         End_Procedure
                     End_Object
 
-                    Object oSelectHijoJugadorItem1 is a cWebMenuItem
-                        Set psCaption to "SelectHijoJugador"
+                    Object oSelectAjustesItem1 is a cWebMenuItem
+                        Set psCaption to "SelectAjustes"
 
-                        WebRegisterPath ntNavigateBegin oSelectHijoJugador
-
-                        Procedure OnClick
-                            Forward Send OnClick
-                                Send NavigatePath
-                        End_Procedure
-                    End_Object
-
-                    Object oSelectHijoEntrenadorItem1 is a cWebMenuItem
-                        Set psCaption to "SelectHijoEntrenador"
-
-                        WebRegisterPath ntNavigateBegin oSelectHijoEntrenador
+                        WebRegisterPath ntNavigateBegin oSelectAjustes
 
                         Procedure OnClick
                             Forward Send OnClick
@@ -152,16 +130,7 @@ Object oWebApp is a cWebApp
                         End_Procedure
                     End_Object
 
-                    Object oSelectNietoDeHijosItem1 is a cWebMenuItem
-                        Set psCaption to "SelectNietoDeHijos"
-
-                        WebRegisterPath ntNavigateBegin oSelectNietoDeHijos
-
-                        Procedure OnClick
-                            Forward Send OnClick
-                                Send NavigatePath
-                        End_Procedure
-                    End_Object
+                    //Aquí borré
                 End_Object
 
                 Object oSignOut_itm is a cWebMenuItem
@@ -249,22 +218,20 @@ Object oWebApp is a cWebApp
     Use ZoomEquipo.wo
     Use SelectEntrenador.wo
     Use ZoomEntrenador.wo
-    Use SelectTodasLasLigas.wo
-    Use SelectPosicion.wo
-    Use ZoomPosicion.wo
     Use SelectJugador.wo
     Use ZoomJugador.wo
+    Use SelectPosicion.wo
     Use SelectJugadorPosicion.wo
-    Use ZoomNieto.wo
-    Use ZoomHijoJugador.wo
+    Use ZoomPosicion.wo
+    
     Use SelectHijoJugador.wo
-    Use ZoomHijoEntrenador.wo
-    Use SelectHijoEntrenador.wo
-    Use ZoomNietoDeHijos.wo
-    Use SelectNietoDeHijos.wo
-    //-----
+    Use ZoomHijoJugador.wo
+    Use SelectAjustes.wo
+    Use ZoomAjustes.wo
+    
     Set phoDefaultView to oDashboard
 
+//Aquí había un EndObject
 End_Object
 
 Send StartWebApp of oWebApp

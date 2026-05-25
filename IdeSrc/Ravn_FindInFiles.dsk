@@ -5,10 +5,10 @@ SubDirectories=1
 WholeWordOnly=0
 RegularExpression=0
 SearchWhere=0
-Location=C:\DataFlex Projects\FutbolWebApp-main\IdeSrc\Ravn_FindInFiles.dsk
-[C:\DataFlex Projects\FutbolWebApp-main\AppSrc]
+Location=C:\DataFlex Projects\FutbolWebApp-main\Dataflex\IdeSrc\Ravn_FindInFiles.dsk
+[C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc]
 IsEnabled=1
-[C:\DataFlex Projects\FutbolWebApp-main\DDSrc]
+[C:\DataFlex Projects\FutbolWebApp-main\Dataflex\DDSrc]
 IsEnabled=1
-[C:\DataFlex Projects\FutbolWebApp-main\AppHtml]
+[C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppHtml]
 IsEnabled=1

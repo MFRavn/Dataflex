@@ -1,8 +1,4 @@
-﻿// C:\Local.DF25.projects\FutbolWebApp\AppSrc\ZoomHijoJugador.wo
-// ZoomHijoJugador
-//
-
-Use cWebView.pkg
+﻿Use cWebView.pkg
 Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg

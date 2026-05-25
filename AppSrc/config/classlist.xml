@@ -550,9 +550,9 @@
 			<libraryID>0</libraryID>
 		</class>
 		<class>
-			<className>cDBTagsForm</className>
-			<image>cDBTagsForm.ico</image>
-			<package>cDBTagsForm.pkg</package>
+			<className>cDbTagsForm</className>
+			<image>cDbTagsForm.ico</image>
+			<package>cDbTagsForm.pkg</package>
 			<groupName>Data Controls</groupName>
 			<libraryID>0</libraryID>
 		</class>

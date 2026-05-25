@@ -1,0 +1,87 @@
+[Workspace]
+CurrentProject=WebApp.src
+Location=C:\DataFlex Projects\FutbolDataControl\IdeSrc\alfon_Studio.dsk
+CreateNew=3
+[TabWindows]
+GroupCount=1
+HorizontalGroups=1
+[TabGroup0]
+GroupSize=40
+SelectedTab=2
+[Window0]
+Filename=C:\DataFlex Projects\FutbolDataControl\AppSrc\ZoomAjustes.wo
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=90
+CursorColumn=4
+TabIndex=0
+TabGroup=0
+[Window1]
+Filename=C:\DataFlex Projects\FutbolDataControl\DDSrc\cWebAppUserDataDictionary.dd
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=45
+CursorColumn=9
+TabIndex=1
+TabGroup=0
+[Window2]
+Filename=C:\DataFlex Projects\FutbolDataControl\AppSrc\ZoomJugador.wo
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=0
+CursorColumn=0
+TabIndex=6
+TabGroup=0
+[Window3]
+Filename=C:\DataFlex Projects\FutbolDataControl\AppSrc\ZoomPosicion.wo
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=141
+CursorColumn=3
+TabIndex=5
+TabGroup=0
+[Window4]
+Filename=C:\DataFlex Projects\FutbolDataControl\AppSrc\SelectPosicion.wo
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=134
+CursorColumn=3
+TabIndex=4
+TabGroup=0
+[Window5]
+Filename=C:\DataFlex Projects\FutbolDataControl\AppSrc\SelectJugadorPosicion.wo
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=166
+CursorColumn=10
+TabIndex=3
+TabGroup=0
+[Window6]
+Filename=C:\DataFlex Projects\FutbolDataControl\AppSrc\WebApp.src
+ViewType=1
+Top=21
+Left=0
+Bottom=726
+Right=1344
+CursorLine=11
+CursorColumn=33
+TabIndex=2
+TabGroup=0

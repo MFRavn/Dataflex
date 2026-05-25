@@ -3,3 +3,4 @@
 #REPLACE equipo.ID |FN2,1
 #REPLACE equipo.Nombre |FS2,2
 #REPLACE equipo.LigaID |FN2,3
+#REPLACE equipo.Escudo |FS2,4

@@ -1,4 +1,4 @@
-Use cWebResourceManager.pkg
+﻿Use cWebResourceManager.pkg
 
 Object oWebResourceManager is a cWebResourceManager
 End_Object

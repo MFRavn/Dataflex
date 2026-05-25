@@ -1,72 +1,97 @@
-﻿Use cWebView.pkg
-Use cWebPanel.pkg
-Use cWebButton.pkg
+﻿// C:\DataFlex Projects\FutbolDataControl\AppSrc\SelectEquipo.wo
+// SelectEquipo
+//
+
+Use cWebView.pkg
 Use cWebList.pkg
-Use cWebColumn.pkg
-Use cWebMenuGroup.pkg 
+Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
-Use cWebForm.pkg
 Use cWebColumnButton.pkg
+Use cWebColumn.pkg
+Use cWebColumnImage.pkg
+
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 
+// Registramos el Zoom para poder usar sus funciones de ruta
+Register_Object oZoomEquipo
+
 Object oSelectEquipo is a cWebView
-
-    // Your DDO structure will go here
-    Object oLigaDD is a cligaDataDictionary
-    End_Object
-    
-    Object oEquipoDD is a cequipoDataDictionary
-        Set DDO_Server to oLigaDD
-    End_Object
-    
-    Set Main_DD to oEquipoDD
-    Set Server to oEquipoDD
-
-    Set peWebViewStyle to wvsDrillDown
-    Set peViewType to vtSelect
-    Set pbShowCaption to False
     Set psCaption to "SelectEquipo"
-
+    Set peWebViewStyle to wvsDrilldown
+    Set peViewType to vtSelect
+    Set piColumnCount to 12
+    Set pbShowCaption to False
     Set piMaxWidth to 1024
-    Set piColumnCount to 6
 
-    WebSetResponsive piColumnCount rmTabletPortrait to 3
-    
-    // Esta propiedad guardará: 0=Todo, 1=Viene de Liga, 2=Viene de Entrenador
-    Property Integer piModo 0
+    Object oliga_DD is a cligaDataDictionary
+    End_Object 
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server To oliga_DD
+    End_Object 
+
+    Set Main_DD To oequipo_DD
+    Set Server  To oequipo_DD
+
 
     Object oList is a cWebList
-        Set pbFillHeight to True
         Set piColumnSpan to 0
-        Set pbServerOnRowClick to True
         Set psCSSClass to "MobileList"
-        Set piSortColumn to 0 // set this to allow for searching
-        Set pbShowHeader to True
+        Set pbServerOnRowClick to True
+        Set pbFillHeight to True
+        Set pbShowHeader to False
+        Set piSortColumn to 1 //cambiado
+        
+    // --- COLUMNA DE IMAGEN (ESCUDO) ---
+        Object oWebColumnEscudo is a cWebColumnImage
+            Set psCaption to "Escudo"
+            Set psCSSClass to "ColImgRound" // Opcional: añade redondeado si tienes el CSS
+            Set piWidth to 80
+            Set pbFixedWidth to True
+            Set pbDynamic to True
+            Set piImageHeight to 46
+            Set piImageWidth to 46
+            Set piListRowSpan to 3 // Ocupa las 3 filas de detalle
+            Set peAlign to alignCenter
+            Set pePosition to wiFit
+            
+            Procedure OnDefineImages
+                String sPath sUrl
+                Forward Send OnDefineImages
+                
+                // Usamos la función que ya existe en el Zoom para mantener consistencia
+                Get EquipoEscudosFolder of oZoomEquipo to sPath
+                
+                If (Trim(Equipo.Escudo) <> "") Begin
+                    Move (sPath + "\" + Trim(Equipo.Escudo)) to sPath
+                End
+                Else Begin
+                    Move (sPath + "\no_escudo.png") to sPath
+                End
+                
+                Get DownloadURL of ghoWebResourceManager sPath to sUrl
+                Send AddImage sUrl
+            End_Procedure
+        End_Object
+    
 
-        // place web column controls controls here.
-
-        Object oName_Col is a cWebColumn
+        Object oequipoNombre is a cWebColumn
             Entry_Item equipo.Nombre
-            Set psCaption to "Equipo"
-            Set peAlign to alignLeft
+            Set psCaption to "equipo.Nombre"
+            Set piWidth to 1201
+            Set psCSSClass to "RowCaption"
         End_Object 
-        
-        Object oLigaName_Col is a cWebColumn
-            Entry_Item liga.Nombre
-            Set psCaption to "liga"
-            Set peAlign to alignLeft
-        End_Object 
-        
-        // sample of a right-aligned info column button
+
         Object oDetailButton is a cWebColumnButton
+            Set psCaption to "btn"
             Set piWidth to 45
             Set pbFixedWidth to True
             Set pbResizable to False
+            Set piListRowSpan to 3
             Set psBtnCssClass to "WebButtonIcon WebIcon_Info"
             Set peAlign to alignRight
-            Set piListRowSpan to 2
-	    
+
             WebRegisterPath ntNavigateForward oZoomEquipo
 
             Procedure OnClick
@@ -78,94 +103,69 @@ Object oSelectEquipo is a cWebView
             End_Procedure
 
         End_Object 
-        
-         Object oColDetalleVariable is a cWebColumn
-            Set psCaption to "Origen / Información"
-            Set piWidth to 250
-        
-            // Este es el evento mágico que rellena la celda
-            Procedure OnSetCalculatedValue String ByRef sValue
-                Integer iModo
-                // Le preguntamos a la vista: "¿En qué modo estamos?"
-                WebGet piModo of oEquipo_Select to iModo
-        
-                If (iModo = 1) Begin
-                    Move ("Liga: " + Liga.Nombre) to sValue
-                End
-                Else If (iModo = 2) Begin
-                    Move ("Entrenador: " + Entrenador.Nombre) to sValue
-                End
-                Else Begin
-                    // El caso "Undefined" o por defecto
-                    Move (Liga.Nombre + " - " + Entrenador.Nombre) to sValue
-                End
-            End_Procedure
-        End_Object
 
-        // What to do when the row is selected.
-        //
-        // Depending on how you are using this view, you may wish to
-        // 1. Close the view, which will update the invoking view:
-        //      Send NavigateClose Self
-        // 2. Navigate forward to another view (either a from-main Zoom or a from-parent select):
-        //      Send NavigateForward of oZoomMainView Self
-        //      Send NavigateForward of oSelectChildView Self
-        //    Note: Do not forget to register the forward navigation paths using WebRegisterPath
-        Procedure OnRowClick String sRowID
+        Object oligaNombre is a cWebColumn
+            Entry_Item liga.Nombre
+            Set psCaption to "liga.Nombre"
+            Set piWidth to 1000
+            Set pbNewLine to True
+        End_Object 
 
-            // If this view is being used in multiple contexts, you may need a block of code
-            // like this to handle different types of navigation
+        Object oligaPais is a cWebColumn
+            Entry_Item liga.Pais
+            Set psCaption to "liga.Pais"
+            Set piWidth to 500
+            Set pbNewLine to True
+            Set psCSSClass to "RowDetail"
+        End_Object 
+
+        WebRegisterPath ntNavigateForward oZoomEquipo
+
+        Procedure OnRowClick String sRowId
             tWebNavigateData NavigateData
             Get GetNavigateData to NavigateData
+
             Case Begin
-                Case (NavigateData.eNavigateType=nfFromParent)
-                    // If from parent, this is a constrained drilldown.
-                    // If here, you probably want to Zoom this record or continue to drilldown
-                    //   (See 2 above). 
+                Case (NavigateData.eNavigateType = nfFromParent)
+                    Send NavigateForward of oZoomEquipo Self
                     Case Break
-                Case (NavigateData.eNavigateType=nfFromChild)
-                    // If from child, this is a probably a parent lookup from a Zoom,
-                    // so you just want to close (See 1 above)
+
+                Case (NavigateData.eNavigateType = nfFromChild)
                     Send NavigateClose Self
                     Case Break
-                Case (NavigateData.eNavigateType=nfFromMain)
-                    // If from main, this is a propbably a main file lookup from a Zoom, 
-                    // so you just want to close (see 1 above). 
-                    // This is not used often with the drilldown style
+
+                Case (NavigateData.eNavigateType = nfFromMain)
                     Send NavigateClose Self
                     Case Break
+
                 Case Else // must be nfUndefined
-                    // This may be the start of a drilldown query or some kind of custom query.
-                    // This could be a NavigateClose or a NaviateForward. You may want to check NavigateData.NamedValues.
+                    Send NavigateForward of oZoomEquipo Self
+
             Case End
-
         End_Procedure
 
-        // this makes the zoom view read-only or new or some other customization
         Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
+            Move True to NavigateData.bReadOnly
         End_Procedure
 
-    End_Object    
-    
+    End_Object 
 
-    // add action menu items here
-    
     Object oActionGroup is a cWebMenuGroup
-        Set psGroupName to "MainActions"
 
         Object oSearch is a cWebMenuItem
-            Set psCaption to C_$Search
             Set psCSSClass to "WebPromptMenuItem"
-        
+            Set psCaption to "Search"
+
             Procedure OnClick
                 Send Search of oList
-            End_Procedure            
-        End_Object
+            End_Procedure
+
+        End_Object 
 
         Object oNewButton is a cWebMenuItem
-            Set psCaption to C_$New
             Set psCSSClass to "WebClearMenuItem"
-            
+            Set psCaption to "New"
+
             WebRegisterPath ntNavigateForward oZoomEquipo
 
             Procedure OnClick
@@ -177,105 +177,35 @@ Object oSelectEquipo is a cWebView
             End_Procedure
 
         End_Object 
+    End_Object 
 
-//        // Sample Change sort order button 
-//        Object oSearchOrderNumber is a cWebMenuItem
-//            Set psCaption to "View by ????"
-//            Set peActionDisplay to adMenu  
-//
-//            Procedure OnClick
-//                Integer eType
-//                WebSet piSortColumn of oList to 0 // set a column number
-//                Send GridRefresh of oList
-//            End_Procedure
-//            
-//        End_Object
-
-
-        // Sample top/bottom button
-        Object oCloseView is a cWebMenuItem
-            Set psCaption to "Close"
-            Set peActionDisplay to adMenu
-            Set pbBeginGroup to True             
-        
-            Procedure OnClick
-                Send NavigateClose Self
-            End_Procedure
-            
-        End_Object
-        
-        Object oFindTop is a cWebMenuItem
-            Set psCaption to C_$Top
-            Set peActionDisplay to adMenu
-            Set pbBeginGroup to True             
-        
-            Procedure OnClick
-                Send MoveToFirstRow of oList
-            End_Procedure
-            
-        End_Object
-
-        Object oFindLast is a cWebMenuItem
-            Set psCaption to C_$Bottom
-            Set peActionDisplay to adMenu             
-        
-            Procedure OnClick
-                Send MoveToLastRow of oList
-            End_Procedure
-            
-        End_Object
-    End_Object
-
-    // Add code to customize your Select View based on how it was invoked.
-    // Use NavigateData to determine the context this view will be used in.
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
+        WebSet pbRender of oNewButton to True
+        WebSet pbRender of oDetailButton to True
 
-        // if this view is being used in multiple contexts, you may need a block of code
-        // like this to handle customizations. This would include hiding rows and buttons
-        // (WebSet pbRender) and changing the values of various captions.
         Case Begin
-            Case (NavigateData.eNavigateType=nfFromParent)
-                // If from parent, this is a constrained drill down.
-                // If needed you could check NavigateData.iTable to determine the constraining parent.
+            Case (NavigateData.eNavigateType = nfFromParent)
+                // If from parent, this is a constrained drill down
                 Case Break
-                
-            Case (NavigateData.eNavigateType=nfFromChild)
+
+            Case (NavigateData.eNavigateType = nfFromChild)
                 // If from child, this is a probably a parent lookup from a Zoom
                 Case Break
-                
-            Case (NavigateData.eNavigateType=nfFromMain)
-                // If from main, this is a propbably a main file lookup from a Zoom.
-                // This is not used often with the drilldown style
+
+            Case (NavigateData.eNavigateType = nfFromMain)
+                // If from main, this is a probably a main-file lookup from a Zoom
+                WebSet pbRender of oDetailButton to False
                 Case Break
-                
+
             Case Else // must be nfUndefined
-                // This may be the start of a drilldown query or some kind ofcustom query.
-                // You may want to check NavigateData.NamedValues.
-                  
+                // This may be the start of a drilldown query or this may be used for some kind of custom query.
+
         Case End
         
-        Send SetBreadcrumbCaption "Equipos Selección"
-        Send SetHeaderCaption     "Equipos"
-        
-    End_Procedure
-    
-    Procedure OnClick
-        // Le decimos a la pantalla de equipos: "Oye, que voy desde Liga"
-        WebSet piModo of oEquipo_Select to 1
-        Send NavigateForward of oEquipo_Select Self
-    End_Procedure
-    
-    Procedure OnClick
-        // Le decimos a la pantalla de equipos: "Oye, que voy desde Entrenador"
-        WebSet piModo of oEquipo_Select to 2
-        Send NavigateForward of oEquipo_Select Self
-    End_Procedure
-    
-    // Dentro de oSelectEquipo en SelectEquipo.wo
-    Procedure OnBeforeShow
-        Forward Send OnBeforeShow
-        // Si entramos de forma normal, por defecto ponemos modo 0 (Undefined)
-        // Pero solo si no nos han avisado de lo contrario antes.
+        Send SetHeaderCaption     "Select Equipos"
+        Send SetBreadcrumbCaption "Equipos"
+
     End_Procedure
 
-End_Object
+
+End_Object 

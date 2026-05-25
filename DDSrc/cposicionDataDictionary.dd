@@ -16,6 +16,12 @@ Class cposicionDataDictionary is a DataDictionary
         Set Foreign_Field_Option DD_INDEXFIELD DD_NOPUT to True
         Set Foreign_Field_Option DD_DEFAULT DD_DISPLAYONLY to True
 
+        Set Key_Field_State Field posicion.ID to True
+
+        Set Field_Option Field posicion.Nombre DD_REQUIRED to True
+        //Nuevo
+        Set Field_Prompt_Object Field posicion.Nombre to oSelectPosicion
+
     End_Procedure
 
 End_Class
