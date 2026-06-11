@@ -1,0 +1,8 @@
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 66 (37991) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 67 (37993) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento Unknown Field: EQUIPO.ESCUDO ON LINE: 180 (38298) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 112 (38250) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 113 (38252) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 166 (38291) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 167 (38293) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento Unknown Field: JUGADORPOSICION.ID ON LINE: 21 (38855) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\DDSrc\cjugadorposicionDataDictionary.dd

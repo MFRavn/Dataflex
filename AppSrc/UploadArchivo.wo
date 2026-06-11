@@ -1,0 +1,117 @@
+﻿// C:\DataFlex Projects\FutbolDataControl\AppSrc\UploadArchivo.wo
+// UploadArchivo
+//
+
+Use cWebView.pkg
+Use cWebPanel.pkg
+Use cWebGroup.pkg
+Use cWebHtmlBox.pkg
+Use cWebDragDropFileHelper.pkg
+Use cWebButton.pkg
+Use cWebFileUploadButton.pkg
+
+Object oUploadArchivo is a cWebView
+    Set psCaption to "Subir Archivos al Sistema" [cite: 21]
+    Set piColumnCount to 12 [cite: 21]
+    Set piMaxWidth to 800 [cite: 21]
+
+    // Funciones
+    Function ObtainPath Returns String
+        String sPath
+        Get UploadFolder of ghoWebApp True to sPath [cite: 21]
+        Function_Return sPath [cite: 22]
+    End_Function
+
+    // Zona de aterrizaje y controles visuales
+    Object oZonaAterrizaje_GROUP is a cWebGroup
+        Set psCaption to "Zona de Carga" [cite: 22]
+        Set piColumnCount to 12 [cite: 22]
+        Set piColumnSpan to 12 [cite: 22]
+        Set piRowSpan to 6 [cite: 22]
+        
+        // Cuadro con diseño
+        Object oHtmlInstrucciones is a cWebHtmlBox [cite: 22, 23]
+            Set psHtml to "<div style='text-align:center; padding:40px; border:2px dashed #ccc; background-color: #fafafa; color:#666;'><h3>Arrastra y suelta tus archivos aquí</h3><p>Solo se admiten archivos PDF de menos de 1MB</p></div>" [cite: 23, 24]
+            Set piColumnSpan to 12 [cite: 23]
+        End_Object
+
+        // Botón nativo de subida (Alternativa al arrastrar)
+        Object oUploadBtn is a cWebFileUploadButton
+            Set piColumnSpan to 4
+            Set piColumnIndex to 4 // Centrado
+            Set psCaption to "Seleccionar PDF..."
+            Set pbMultiSelect to False
+            
+            // Reutilizamos la misma lógica de validación del Drag & Drop
+            Function OnSelectFile String sFileName BigInt iBytes String sMime Returns String
+                String sLocalPath
+                // Llamamos a nuestra función validadora centralizada
+                Get ValidarYObtenerRuta sFileName iBytes to sLocalPath
+                Function_Return sLocalPath
+            End_Function
+        End_Object
+    End_Object
+
+    // Lógica Centralizada de Validación y Drag and Drop
+    Object oDragDropFileHelper is a cWebDragDropFileHelper [cite: 24]
+
+        // EVENTO 1: Se ejecuta al soltar el archivo.
+        Function OnFileDrop String sFileName BigInt iBytes String sMime Handle hoDropTarget Integer eDropPosition Returns String [cite: 24, 25]
+            String sLocalPath
+            // Llamamos a nuestra función validadora centralizada
+            Get ValidarYObtenerRuta sFileName iBytes to sLocalPath
+            Function_Return sLocalPath
+        End_Function     
+
+    End_Object
+
+    // Función interna para no duplicar código entre el botón y el arrastrar
+    Function ValidarYObtenerRuta String sFileName BigInt iBytes Returns String
+        String sPath sExt
+        Boolean bOk
+        Integer iMaxBytes
+        
+        // 1. Validación de Tamaño: 1 Megabyte = 1,048,576 Bytes
+        Move 1048576 to iMaxBytes
+        If (iBytes > iMaxBytes) Begin
+            Send ShowInfoBox "El archivo supera el límite permitido de 1MB." "Error de validación"
+            Function_Return ""
+        End
+        
+        // 2. Validación de Extensión: Solo PDF
+        If (Right(Lowercase(sFileName), 4) <> ".pdf") Begin
+            Send ShowInfoBox "Solo se permiten archivos con extensión .pdf" "Error de validación"
+            Function_Return ""
+        End
+        
+        // 3. Validación de Existencia
+        Get ObtainPath to sPath 
+        Move (sPath + "\" + sFileName) to sPath 
+        
+        File_Exist sPath bOk [cite: 25, 26]
+        If (bOk) Begin
+            Send ShowInfoBox (sFileName + " - Este fichero ya existe en el servidor.") "Aviso" [cite: 26]
+            Function_Return "" [cite: 26]
+        End
+        
+        Function_Return sPath 
+    End_Function
+
+    // Eventos y Constructores
+    Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject 
+        Send SetHeaderCaption "Carga de Archivos" 
+    End_Procedure
+    
+    Procedure End_Construct_Object 
+        Forward Send End_Construct_Object 
+        String sPath [cite: 28]
+        
+        // Registro de la zona de aterrizaje con el Helper
+        Send RegisterDropTarget of oDragDropFileHelper (oZonaAterrizaje_GROUP(Self)) C_WebDropOnControl [cite: 28]
+        
+        // Registro dinámico de la carpeta de subidas en el administrador de recursos
+        Get ObtainPath to sPath [cite: 28]
+        Send RegisterUploadFolder of ghoWebResourceManager sPath [cite: 28]
+    End_Procedure
+
+End_Object
