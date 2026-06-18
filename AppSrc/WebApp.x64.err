@@ -1,8 +1,32 @@
-ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 66 (37991) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 67 (37993) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento Unknown Field: EQUIPO.ESCUDO ON LINE: 180 (38298) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 112 (38250) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 113 (38252) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 166 (38291) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 167 (38293) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
-ERROR: 4328 Simbolo no definido en argumento Unknown Field: JUGADORPOSICION.ID ON LINE: 21 (38855) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\DDSrc\cjugadorposicionDataDictionary.dd
+ERROR: 4328 Simbolo no definido en argumento Unknown Field: JUGADORPOSICION.ID ON LINE: 21 (37495) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\DDSrc\cjugadorposicionDataDictionary.dd
+ERROR: 4345 Error de comprobación de tipo LIGA.RECNUM.FILE_NUMBER, MUST BE DEFINED ON LINE: 92 (37562) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 52 Formato de cálculo incorrecto  ON LINE: 92 (37562) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo EQUIPO.LIGACODIGO, MUST BE DEFINED ON LINE: 100 (37571) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento LIGA.CODIGO ON LINE: 100 (37571) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.LIGACODIGO ON LINE: 100 (37571) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo EQUIPO.LIGACODIGO.FILE_NUMBER, MUST BE DEFINED ON LINE: 101 (37572) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 52 Formato de cálculo incorrecto  ON LINE: 101 (37572) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo JUGADOR.EQUIPOCODIGO, MUST BE DEFINED ON LINE: 105 (37578) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.CODIGO ON LINE: 105 (37578) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento JUGADOR.EQUIPOCODIGO ON LINE: 105 (37578) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo JUGADOR.EQUIPOCODIGO.FILE_NUMBER, MUST BE DEFINED ON LINE: 106 (37579) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 52 Formato de cálculo incorrecto  ON LINE: 106 (37579) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo JUGADOR.EQUIPOCODIGO.FILE_NUMBER, MUST BE DEFINED ON LINE: 136 (37616) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 52 Formato de cálculo incorrecto  ON LINE: 136 (37616) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo EQUIPO.LIGACODIGO.FILE_NUMBER, MUST BE DEFINED ON LINE: 139 (37618) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 52 Formato de cálculo incorrecto  ON LINE: 139 (37618) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4345 Error de comprobación de tipo LIGA.RECNUM.FILE_NUMBER, MUST BE DEFINED ON LINE: 150 (37626) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 52 Formato de cálculo incorrecto  ON LINE: 150 (37626) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4298 Comando no encontrado END_OBJECTS ON LINE: 231 (37736) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.LIGACODIGO ON LINE: 102 (37573) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento LIGA.CODIGO ON LINE: 102 (37573) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento JUGADOR.EQUIPOCODIGO ON LINE: 107 (37580) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.CODIGO ON LINE: 107 (37580) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\Dashboard.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 66 (38162) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 67 (38164) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\SelectEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento Unknown Field: EQUIPO.ESCUDO ON LINE: 180 (38446) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 112 (38398) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 113 (38400) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 166 (38439) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4328 Simbolo no definido en argumento EQUIPO.ESCUDO ON LINE: 167 (38441) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\ZoomEquipo.wo
+ERROR: 4323 Falta END_OBJECT  ON LINE: 238 (40430) OF FILE: C:\DataFlex Projects\FutbolWebApp-main\Dataflex\AppSrc\WebApp.src

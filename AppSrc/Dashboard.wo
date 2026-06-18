@@ -11,24 +11,36 @@ Use cWebLabel.pkg
 Use cWebList.pkg
 Use cWebColumn.pkg
 
+Use cligaDataDictionary.dd
+Use cequipoDataDictionary.dd
+Use cjugadorDataDictionary.dd
+Use cposicionDataDictionary.dd
+Use cjugadorposicionDataDictionary.dd
+
 Object oDashboard is a cWebView
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
-    // Add a DDO Structure 
-    //
-    // There is no need to synchronize a DD structure on the client so we do
-    // not set the Server property or send ADDOStructure. We will simply use
-    // DDO's to mine data and generate HTML for our cWebHTMLBox objects.
-    // It is the HTML in these objects that is sent to the client each time 
-    // this page is shown.
-    //
-    // Also, it is important for the drill-down Navigation interface that we
-    // do not set the Server property to some DDO because this will affect 
-    // constraints in the next view that we navigate to.
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    // Estructura DDO silenciosa para minar los datos (como sugiere el comentario original)
+    Object oliga_DD is a cligaDataDictionary
+    End_Object
+
+    Object oequipo_DD is a cequipoDataDictionary
+        Set DDO_Server to oliga_DD
+    End_Object
+
+    Object ojugador_DD is a cjugadorDataDictionary
+        Set DDO_Server to oequipo_DD
+    End_Object
+
+    Object oposicion_DD is a cposicionDataDictionary
+    End_Object
+
+    Object ojugadorposicion_DD is a cjugadorposicionDataDictionary
+        Set DDO_Server to ojugador_DD
+        Set DDO_Server to oposicion_DD
+        Set Constrain_file to jugador.File_Number
+    End_Object
 
     Set piMaxWidth to 0
-    
     Set psCaption to "Dashboard"
     Set peViewType to vtUndefined
     Set pbShowCaption to False
@@ -37,20 +49,15 @@ Object oDashboard is a cWebView
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 24
         
-        // - - - - - - - - - - - - - - -
-        // Main Panel's Responsive Rules
-        // - - - - - - - - - - - - - - -
         WebSetResponsive piColumnCount rmMobile to 1
         WebSetResponsive piColumnCount rmTabletPortrait to 16
     
         Object oTiles_grp is a cWebGroup
             Set piColumnSpan to 8
-//            Para centrar e dashboard
             Set piColumnIndex to 8
             Set pbShowBorder to False
             Set pbShowCaption to False
             Set piColumnCount to 12
-            
             Set psCSSClass to "TilesGroup"
     
             Object oWelcomeTile is a cWebHtmlBox
@@ -64,8 +71,98 @@ Object oDashboard is a cWebView
                                      '<div class="Tile_Subtitle">' - htmlEncode(psUserName(ghoWebSessionManager)) - '</div>' +;
                                      '</div>')
                 End_Procedure
-                
             End_Object
+
+            // --- NUEVO TILE: RESUMEN DE LIGAS Y POSICIONES ---
+            Object oTileResumenLigas is a cWebHtmlBox
+                Set piColumnSpan to 6
+                Set piColumnIndex to 6
+                Set psCSSClass to "Tile Light"
+                Set psHtml to '<div class="WebCon_Sizer"><div class="Tile_Title">Resumen Ligas</div></div>'
+
+                // Función interna que recorre la base de datos y genera el HTML estructurado
+                Function GenerarResumenLigas Returns String
+                    String sHtml sDelanteros sMediocentros sPorteros
+                    
+                    Move "" to sHtml
+                    
+                    // Recorremos todas las ligas
+                    Clear liga
+                    Find ge liga.Recnum
+                    While (Found)
+                        Move "" to sDelanteros
+                        Move "" to sMediocentros
+                        Move "" to sPorteros
+                        
+                        // Buscamos los jugadores de esta liga a través de la relación de tablas
+                        Clear equipo
+                        Move liga.Codigo to equipo.LigaCodigo // Ajusta a tus nombres reales de campos relación
+                        Find ge equipo.LigaCodigo
+                        While (Found and equipo.LigaCodigo = liga.Codigo)
+                            
+                            Clear jugador
+                            Move equipo.Codigo to jugador.EquipoCodigo
+                            Find ge jugador.EquipoCodigo
+                            While (Found and jugador.EquipoCodigo = equipo.Codigo)
+                                
+                                // Evaluamos la posición del jugador usando el archivo intermedio/posición
+                                Clear jugadorposicion
+                                Move jugador.ID to jugadorposicion.JugadorID
+                                Find ge jugadorposicion.JugadorID
+                                While (Found and jugadorposicion.JugadorID = jugador.ID)
+                                    // Relacionamos con la tabla maestra de posiciones
+                                    Clear posicion
+                                    Move jugadorposicion.PosicionID to posicion.ID
+                                    Find eq posicion.ID
+                                    
+                                    // Clasificamos y acumulamos los nombres separados por comas
+                                    If (Uppercase(posicion.Nombre) contains "DELANTERO") Begin
+                                        If (sDelanteros <> "") Move (sDelanteros + ", ") to sDelanteros
+                                        Move (sDelanteros + Trim(jugador.Nombre) + " " + Trim(jugador.Apellido)) to sDelanteros
+                                    End
+                                    Else If (Uppercase(posicion.Nombre) contains "MEDIOCENTRO" or Uppercase(posicion.Nombre) contains "VOLANTE") Begin
+                                        If (sMediocentros <> "") Move (sMediocentros + ", ") to sMediocentros
+                                        Move (sMediocentros + Trim(jugador.Nombre) + " " + Trim(jugador.Apellido)) to sMediocentros
+                                    End
+                                    Else If (Uppercase(posicion.Nombre) contains "PORTERO" or Uppercase(posicion.Nombre) contains "ARQUERO") Begin
+                                        If (sPorteros <> "") Move (sPorteros + ", ") to sPorteros
+                                        Move (sPorteros + Trim(jugador.Nombre) + " " + Trim(jugador.Apellido)) to sPorteros
+                                    End
+                                    
+                                    Find gt jugadorposicion.JugadorID
+                                Loop
+                                
+                                Find gt jugador.EquipoCodigo
+                            Loop
+                            
+                            Find gt equipo.LigaCodigo
+                        Loop
+                        
+                        // Si la liga tiene datos procesados, armamos su HTML
+                        Move (sHtml + '<div style="margin-bottom:12px; text-align:left; font-size:13px; color:#333;">') to sHtml
+                        Move (sHtml + '<strong>' + Trim(liga.Nombre) + '</strong><br/>') to sHtml
+                        Move (sHtml + '<span style="color:#666;">Delanteros:</span> ' + (If(sDelanteros<>"", sDelanteros, "Ninguno")) + '<br/>') to sHtml
+                        Move (sHtml + '<span style="color:#666;">Mediocentros:</span> ' + (If(sMediocentros<>"", sMediocentros, "Ninguno")) + '<br/>') to sHtml
+                        Move (sHtml + '<span style="color:#666;">Porteros:</span> ' + (If(sPorteros<>"", sPorteros, "Ninguno")) + '<br/>') to sHtml
+                        Move (sHtml + '</div>') to sHtml
+                        
+                        Find gt liga.Recnum
+                    Loop
+                    
+                    Function_Return sHtml
+                End_Function
+
+                Procedure OnLoad
+                    String sContenido
+                    Get GenerarResumenLigas to sContenido
+                    
+                    Send UpdateHTML ('<div class="WebCon_Sizer" style="overflow-y:auto; max-height:200px; padding:10px;">' + ;
+                                     '<div class="Tile_Title" style="margin-bottom:10px;">Resumen por Posiciones</div>' +;
+                                     sContenido +;
+                                     '</div>')
+                End_Procedure
+            End_Object
+            // --- FIN NUEVO TILE ---
     
             Object oTile2 is a cWebHtmlBox
                 Set pbServerOnClick to True
@@ -73,13 +170,10 @@ Object oDashboard is a cWebView
                 Set piColumnIndex to 6
                 Set psCSSClass to "Tile LightAlternate"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Ligas</div><div class="Tile_Subtitle"></div></div>'
-                                
-                 WebRegisterPath ntNavigateForwardCustom oSelectLiga
-                
+                WebRegisterPath ntNavigateForwardCustom oSelectLiga
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
     
             Object oTile3 is a cWebHtmlBox
@@ -87,13 +181,10 @@ Object oDashboard is a cWebView
                 Set piColumnSpan to 6
                 Set psCSSClass to "Tile Dark"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Equipos</div><div class="Tile_Subtitle"></div></div>'
-    
-                 WebRegisterPath ntNavigateForwardCustom oSelectEquipo
-                
+                WebRegisterPath ntNavigateForwardCustom oSelectEquipo
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
     
             Object oTile4 is a cWebHtmlBox
@@ -102,13 +193,10 @@ Object oDashboard is a cWebView
                 Set piColumnIndex to 6
                 Set psCSSClass to "Tile DarkAlternate"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Entrenadores</div><div class="Tile_Subtitle"></div></div>'
-            
-                 WebRegisterPath ntNavigateForwardCustom oSelectEntrenador
-                
+                WebRegisterPath ntNavigateForwardCustom oSelectEntrenador
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
             
             Object oTile5 is a cWebHtmlBox
@@ -116,13 +204,10 @@ Object oDashboard is a cWebView
                 Set piColumnSpan to 6
                 Set psCSSClass to "Tile Dark"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Jugadores</div><div class="Tile_Subtitle"></div></div>'
-    
-                 WebRegisterPath ntNavigateForwardCustom oSelectJugador
-                
+                WebRegisterPath ntNavigateForwardCustom oSelectJugador
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
             
             Object oTile6 is a cWebHtmlBox
@@ -131,21 +216,15 @@ Object oDashboard is a cWebView
                 Set piColumnIndex to 6
                 Set psCSSClass to "Tile DarkAlternate"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Ajustes</div><div class="Tile_Subtitle"></div></div>'
-            
-                 WebRegisterPath ntNavigateForwardCustom oSelectAjustes
-                
+                WebRegisterPath ntNavigateForwardCustom oSelectAjustes
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
-            
         End_Object
-    
     End_Object
     
     Procedure OnBeforeShow
-        // Each time this view is shown we will update the appropriate information.
     End_Procedure
 
-End_Object
+End_ObjectS
